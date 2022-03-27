@@ -65,12 +65,15 @@ int main(void){
     }
     
     chaine=protected_to_str(pr);
+    free(pr);
     printf("protected_to_str: %s\n",chaine);
     pr=str_to_protected(chaine);
     char *st=key_to_str(pr->pKey);
     char *sgnstr=signature_to_str(pr->sgn);
     printf("str_to_protected: %s %s %s\n",st,pr->mess,sgnstr);
 
+    generate_random_data(50,20);
+    
     free(sgn->tab);
     free(sgn);
     free(st);

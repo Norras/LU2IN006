@@ -17,7 +17,9 @@ void init_key(Key *key,long val,long n){
 -- pKey et sKey doivent être instanciés en amont */
 void init_pair_keys(Key *pKey,Key *sKey,long low_size,long up_size){
     long n=0,s=0,u=0;
-    generate_key_values(random_prime_number(low_size,up_size,5000),random_prime_number(low_size,up_size,5000),&n,&s,&u);
+    while (s==u){
+        generate_key_values(random_prime_number(low_size,up_size,5000),random_prime_number(low_size,up_size,5000),&n,&s,&u);
+    }
     init_key(pKey,s,n);
     init_key(sKey,u,n);
 }
@@ -118,7 +120,7 @@ void free_protected(Protected *p){
 /*Fonction de vérification du message crypté avec la clé publique*/
 int verify(Protected *pr){
     char *t=decrypt(pr->sgn->tab,pr->sgn->n,pr->pKey->val,pr->pKey->n);
-    char dc[200];
+    char dc[500];
     strcpy(dc,t);
     free(t);
     return strcmp(pr->mess,dc);
@@ -126,13 +128,15 @@ int verify(Protected *pr){
 
 /*Fonction de conversion d'une structure Protected en chaine de caractères*/
 char *protected_to_str(Protected *pr){
+    if (pr==NULL){
+        return "";
+    }
     char *res=malloc(sizeof(char)*256);
     char *k=key_to_str(pr->pKey);
     char *s=signature_to_str(pr->sgn);
     sprintf(res,"%s %s %s",k,pr->mess,s);
     free(k);
     free(s);
-    free(pr);
     return res;
 }
 
@@ -155,29 +159,42 @@ void generate_random_data(int nv,int nc){
     FILE *declarations=fopen("declarations.txt","w");
     Key *kptab[nv];
     Key *kstab[nv];
-    Key *ctab[nc];
+    Key *cptab[nc];
     char *mess;
+    char *str;
+    char *str2;
+    int rdm;
     Signature *sgn;
-    
+    // Ecriture du fichier keys.txt
     for(int i=0;i<nv;i++){
         srand(time(NULL)*rand());
-        kptab[i]=malloc(sizeof(Key));
-        kstab[i]=malloc(sizeof(Key));
+        kptab[i]=(Key *)malloc(sizeof(Key));
+        kstab[i]=(Key *)malloc(sizeof(Key));
         init_pair_keys(kptab[i],kstab[i],3,7);
-        fprintf(keys,"%s %s\n",key_to_str(kptab[i]),key_to_str(kstab[i]));
+        str=key_to_str(kstab[i]);
+        str2=key_to_str(kptab[i]);
+        fprintf(keys,"%s %s\n",str2,str);
+        free(str);
+        free(str2);
     }
-    
+    // Ecriture du fichier candidates.txt
     for(int i=0;i<nc;i++){
         srand(time(NULL)*rand());
-        ctab[i]=kptab[rand()%nv];
-        fprintf(candidates,"%s\n",key_to_str(ctab[i]));
+        rdm=rand()%nv;
+        cptab[i]=kptab[rdm];
+        str=key_to_str(cptab[i]);
+        fprintf(candidates,"%s\n",str);
+        free(str);
     }
-    
+    // Ecriture du fichier declarations.txt
     for(int i=0;i<nv;i++){
         srand(time(NULL)*rand());
-        mess=key_to_str(ctab[rand()%nc]);
-        sgn=sign(mess,kptab[i]);
-        fprintf(declarations,"%s\n",signature_to_str(sgn));
+        mess=key_to_str(cptab[rand()%nc]);  // PB ICI CLE PUBLIQUE AU LIEU DE PRIVE
+        sgn=sign(mess,kstab[i]);
+        str=signature_to_str(sgn);
+        fprintf(declarations,"%s\n",str);
+        free(str);
+        free(mess);
         free_signature(sgn);
     }
     // Libération des clés

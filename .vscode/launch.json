@@ -4,19 +4,18 @@
     // Pour plus d'informations, visitez : https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
         {
-            "name": "gcc.exe - Générer et déboguer le fichier actif",
+            "name": "(gdb) Lancer",
             "type": "cppdbg",
             "request": "launch",
-            "program": "/mnt/c/Users/Nora/OneDrive/Bureau/Travail/LU2IN006/projet/main2",
+            "program": "${workspaceFolder}/list_data",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "/mnt/c/Users/Nora/OneDrive/Bureau/Travail/LU2IN006/projet",
+            "cwd": "${fileDirname}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "gdb",
-            "miDebuggerPath": "C:\\MinGW\\bin\\gdb.exe",
+            "miDebuggerPath": "/usr/bin/gdb",
             "setupCommands": [
                 {
                     "description": "Activer l'impression en mode Pretty pour gdb",
@@ -24,12 +23,12 @@
                     "ignoreFailures": true
                 },
                 {
-                    "description": "Définir la version désassemblage sur Intel",
+                    "description":  "Définir la version désassemblage sur Intel",
                     "text": "-gdb-set disassembly-flavor intel",
                     "ignoreFailures": true
                 }
-            ],
-            "preLaunchTask": "C/C++: gcc.exe générer le fichier actif"
+            ]
         }
+
     ]
 }
