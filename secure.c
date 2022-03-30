@@ -193,7 +193,6 @@ void generate_random_data(int nv,int nc){
         mess=key_to_str(cptab[r]); 
         sgn=sign(mess,kstab[i]);
         str=signature_to_str(sgn);
-        printf("%s\n",decrypt(sgn->tab,sgn->n,kptab[i]->val,kptab[i]->n));
         fprintf(declarations,"%s %s %s\n",kpstr,mess,str);
         free(str);
         free(mess);

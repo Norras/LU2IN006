@@ -56,9 +56,12 @@ HashTable *create_hashtable(CellKey *keys,int size){
 }
 
 void delete_hashtable(HashTable *t){
-    for(int i;i<t->size;i++){
-        free(t->tab[i]->key);
-        free(t->tab[i]);
+    for(int i=0;i<t->size;i++){
+        if (t->tab[i]!=NULL){
+            free(t->tab[i]->key);
+            free(t->tab[i]);
+        }
+
     }
     free(t->tab);
     free(t);
@@ -86,6 +89,9 @@ int verif_candidat(Key *cand,CellKey *list){
 }
 
 Key *compute_winner(CellProtected *decl,CellKey *candidates,CellKey *voters,int sizeC,int sizeV){
+    if (voters==NULL || candidates==NULL || decl==NULL){
+        return NULL;
+    }
     HashTable *tableC=create_hashtable(candidates,sizeC);
     HashTable *tableV=create_hashtable(voters,sizeV);
     CellProtected *declarations=decl;
@@ -96,9 +102,7 @@ Key *compute_winner(CellProtected *decl,CellKey *candidates,CellKey *voters,int 
             if (tableV->tab[find_position(tableV,declarations->data->pKey)]->val==0){
                 //printf("aJAJKA\n");
                 tableV->tab[find_position(tableV,declarations->data->pKey)]->val=1;
-                printf("%s\n",declarations->data->mess);
                 Key *ck=str_to_key(declarations->data->mess);
-                printf("%p\n",&(ck->val));
                 if (verif_candidat(ck,candidates)){
                     tableC->tab[find_position(tableC,ck)]->val++;
                 }
@@ -107,34 +111,40 @@ Key *compute_winner(CellProtected *decl,CellKey *candidates,CellKey *voters,int 
         }
         declarations=declarations->next;
     }
-    
-    HashCell *max=tableC->tab[0];
+    HashCell *max=NULL;
+    for(int i=0;i<sizeC;i++){
+        if (tableC->tab[i]!=NULL){
+            max=tableC->tab[i];
+            break;
+        }
+    }
     for(int i=1;i<sizeC;i++){
         if (tableC->tab[i]!=NULL && tableC->tab[i]->val > max->val){
             max=tableC->tab[i];
         }
     }
+    delete_hashtable(tableC);
+    delete_hashtable(tableV);
     return max->key;
 }
 
 
 int main(){
-    printf("AEDK\n");
-
 
 
     CellKey *voters=read_public_keys("keys.txt");
     HashTable *table=create_hashtable(voters,50);
     CellKey *candidates=read_public_keys("candidates.txt");
     int pos=find_position(table,voters->next->data);
-    printf("%d\n",pos);
+    HashCell *cell=create_hashcell(voters->data);
     int sizeV=50;
     int sizeC=20;
-    CellProtected *decl=read_protected("declarations.txt");
+    CellProtected *decl=valid_list_protected(read_protected("declarations.txt"));
     //verif_candidat(candidates->data,voters);
     Key *winner=compute_winner(decl,candidates,voters,sizeC,sizeV);
-    // char *winnerstr=key_to_str(winner);
-    // printf("Winner : %s\n",winnerstr);
+    char *winnerstr=key_to_str(winner);
+    printf("Winner : %s\n",winnerstr);
+    delete_hashtable(table);
 
     return 0;
 }
