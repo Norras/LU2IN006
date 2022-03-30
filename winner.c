@@ -123,9 +123,11 @@ Key *compute_winner(CellProtected *decl,CellKey *candidates,CellKey *voters,int 
             max=tableC->tab[i];
         }
     }
+    Key *res=(Key *)malloc(sizeof(Key));
+    init_key(res,max->key->val,max->key->n);
     delete_hashtable(tableC);
     delete_hashtable(tableV);
-    return max->key;
+    return res;
 }
 
 
@@ -133,9 +135,7 @@ int main(){
 
 
     CellKey *voters=read_public_keys("keys.txt");
-    HashTable *table=create_hashtable(voters,50);
     CellKey *candidates=read_public_keys("candidates.txt");
-    int pos=find_position(table,voters->next->data);
     HashCell *cell=create_hashcell(voters->data);
     int sizeV=50;
     int sizeC=20;
@@ -144,7 +144,10 @@ int main(){
     Key *winner=compute_winner(decl,candidates,voters,sizeC,sizeV);
     char *winnerstr=key_to_str(winner);
     printf("Winner : %s\n",winnerstr);
-    delete_hashtable(table);
+    delete_list_protected(decl);
 
+    free(cell);
+    free(winner);
+    free(winnerstr);
     return 0;
 }
