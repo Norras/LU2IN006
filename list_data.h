@@ -24,5 +24,7 @@ CellKey *read_public_keys(char *fichier);
 void delete_list_keys(CellKey *list);
 void delete_cell_key(CellKey *c);
 void print_list_protected(CellProtected *LCP);
+void print_list_keys(CellKey *LCK);
+
 
 #endif

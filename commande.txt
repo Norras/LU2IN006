@@ -1,5 +1,6 @@
-set terminal png
-plot "valeurs.txt" using 1:2 title "ModPowNaive" with lines,"valeurs.txt" using 1:3 title "ModPow" with lines
+
+plot "valeurs.txt" using 1:2 title "ModPowNaive" with lines
+replot "valeurs.txt" using 1:3 title "ModPow" with lines
 set term postscript portrait
-set output "courbes.png"
+set output "courbes.ps"
 set size 0.7, 0.7

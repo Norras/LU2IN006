@@ -1,0 +1,600 @@
+cle publique = (2bb,99d) 
+cle privee = (183,99d) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [968 	88c 	5db 	5db 	129 	]
+Decoded: Hello
+cle publique = (a9f,292d) 
+cle privee = (13,292d) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [10f 	266c 	dd1 	dd1 	dc4 	]
+Decoded: Hello
+cle publique = (1b5b,321b) 
+cle privee = (17b3,321b) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [17e1 	ca0 	1640 	1640 	1f21 	]
+Decoded: Hello
+cle publique = (bf,155) 
+cle privee = (b,155) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [32 	65 	6c 	6c 	114 	]
+Decoded: Hello
+cle publique = (83,77f) 
+cle privee = (173,77f) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [463 	194 	352 	352 	5e1 	]
+Decoded: Hello
+cle publique = (833,ef3) 
+cle privee = (4eb,ef3) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [50d 	87d 	50c 	50c 	a5e 	]
+Decoded: Hello
+cle publique = (64d,8e7) 
+cle privee = (2a5,8e7) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [6e8 	55d 	4fa 	4fa 	493 	]
+Decoded: Hello
+cle publique = (719,df1) 
+cle privee = (629,df1) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [831 	600 	33 	33 	26 	]
+Decoded: Hello
+cle publique = (18b9,1af5) 
+cle privee = (9b9,1af5) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [1629 	19a0 	9cb 	9cb 	d55 	]
+Decoded: Hello
+cle publique = (269,913) 
+cle privee = (161,913) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [5ac 	65 	712 	712 	6f 	]
+Decoded: Hello
+cle publique = (469,8e7) 
+cle privee = (409,8e7) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [4fb 	e8 	85b 	85b 	6c1 	]
+Decoded: Hello
+cle publique = (d3f,23cf) 
+cle privee = (bbf,23cf) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [1dd4 	1e1a 	1e39 	1e39 	1ed1 	]
+Decoded: Hello
+cle publique = (577,1123) 
+cle privee = (5c7,1123) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [294 	12c 	49a 	49a 	9d6 	]
+Decoded: Hello
+cle publique = (b9,54d) 
+cle privee = (10d,54d) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [199 	d1 	18f 	18f 	17a 	]
+Decoded: Hello
+cle publique = (dd3,1555) 
+cle privee = (503,1555) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [c39 	dba 	30e 	30e 	ae6 	]
+Decoded: Hello
+cle publique = (2ed,367) 
+cle privee = (dd,367) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [ce 	13c 	1c4 	1c4 	9a 	]
+Decoded: Hello
+cle publique = (475,589) 
+cle privee = (12d,589) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [1f5 	65 	6c 	6c 	576 	]
+Decoded: Hello
+cle publique = (41f,8b7) 
+cle privee = (41f,8b7) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [1f 	4d5 	5e4 	5e4 	c9 	]
+Decoded: Hello
+cle publique = (5b,149) 
+cle privee = (5b,149) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [4f 	106 	b2 	b2 	53 	]
+Decoded: Hello
+cle publique = (f4f,1e83) 
+cle privee = (5ef,1e83) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [48f 	18de 	ea2 	ea2 	154c 	]
+Decoded: Hello
+cle publique = (10f,46d) 
+cle privee = (10f,46d) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [192 	b2 	ae 	ae 	345 	]
+Decoded: Hello
+cle publique = (6c5,14ad) 
+cle privee = (65,14ad) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [67d 	102 	890 	890 	a11 	]
+Decoded: Hello
+cle publique = (1af,1ae7) 
+cle privee = (74f,1ae7) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [124f 	900 	a70 	a70 	5a 	]
+Decoded: Hello
+cle publique = (f9,1c03) 
+cle privee = (8c9,1c03) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [58d 	7e4 	1923 	1923 	1880 	]
+Decoded: Hello
+cle publique = (2ff,1d5f) 
+cle privee = (17f,1d5f) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [48f 	1820 	16d6 	16d6 	91a 	]
+Decoded: Hello
+cle publique = (65b,c59) 
+cle privee = (163,c59) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [548 	4b7 	662 	662 	1c7 	]
+Decoded: Hello
+cle publique = (2497,25e5) 
+cle privee = (ba7,25e5) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [54b 	88c 	220f 	220f 	1d07 	]
+Decoded: Hello
+cle publique = (12fd,1ba9) 
+cle privee = (655,1ba9) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [9fa 	1b44 	101b 	101b 	d8d 	]
+Decoded: Hello
+cle publique = (bd7,c4d) 
+cle privee = (25f,c4d) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [3df 	668 	882 	882 	621 	]
+Decoded: Hello
+cle publique = (457,4f7) 
+cle privee = (187,4f7) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [48 	483 	1e0 	1e0 	3f2 	]
+Decoded: Hello
+cle publique = (179,1d5) 
+cle privee = (7d,1d5) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [146 	15c 	7c 	7c 	13a 	]
+Decoded: Hello
+cle publique = (77f,321b) 
+cle privee = (149f,321b) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [f28 	1484 	b7d 	b7d 	3e8 	]
+Decoded: Hello
+cle publique = (c0b,e99) 
+cle privee = (3b3,e99) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [201 	3f2 	a4 	a4 	e2a 	]
+Decoded: Hello
+cle publique = (c9,235) 
+cle privee = (b9,235) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [160 	88 	5d 	5d 	51 	]
+Decoded: Hello
+cle publique = (723,112f) 
+cle privee = (58b,112f) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [be8 	32 	10a6 	10a6 	e81 	]
+Decoded: Hello
+cle publique = (d51,1175) 
+cle privee = (5d1,1175) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [858 	1100 	beb 	beb 	72a 	]
+Decoded: Hello
+cle publique = (65,16d) 
+cle privee = (4d,16d) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [48 	7e 	d5 	d5 	6 	]
+Decoded: Hello
+cle publique = (9d9,a8d) 
+cle privee = (49,a8d) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [48 	65 	6c 	6c 	6f 	]
+Decoded: Hello
+cle publique = (5ab,887) 
+cle privee = (3b,887) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [46e 	1c7 	3a6 	3a6 	6f 	]
+Decoded: Hello
+cle publique = (111d,1961) 
+cle privee = (a75,1961) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [111b 	1b1 	8cb 	8cb 	72d 	]
+Decoded: Hello
+cle publique = (4c1,1cdb) 
+cle privee = (ad1,1cdb) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [c21 	916 	768 	768 	2d3 	]
+Decoded: Hello
+cle publique = (33b,53f) 
+cle privee = (53,53f) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [d 	1b9 	3df 	3df 	3b6 	]
+Decoded: Hello
+cle publique = (589,661) 
+cle privee = (139,661) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [58d 	3f6 	372 	372 	d9 	]
+Decoded: Hello
+cle publique = (5f,cb) 
+cle privee = (17,cb) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [5f 	7c 	1a 	1a 	84 	]
+Decoded: Hello
+cle publique = (139,553) 
+cle privee = (1d1,553) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [21d 	de 	416 	416 	2f9 	]
+Decoded: Hello
+cle publique = (e8d,12fb) 
+cle privee = (c5,12fb) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [ba3 	43 	97 	97 	f71 	]
+Decoded: Hello
+cle publique = (47,77) 
+cle privee = (17,77) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [51 	21 	52 	52 	68 	]
+Decoded: Hello
+cle publique = (109,1b5) 
+cle privee = (85,1b5) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [173 	134 	152 	152 	9d 	]
+Decoded: Hello
+cle publique = (1981,3515) 
+cle privee = (1ed,3515) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [a3e 	1eb3 	6c 	6c 	be 	]
+Decoded: Hello
+cle publique = (685,787) 
+cle privee = (10d,787) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [739 	56c 	3f0 	3f0 	57d 	]
+Decoded: Hello
+cle publique = (d91,3613) 
+cle privee = (f89,3613) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [5b1 	766 	883 	883 	7e0 	]
+Decoded: Hello
+cle publique = (97,1b5) 
+cle privee = (8b,1b5) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [176 	1ab 	db 	db 	167 	]
+Decoded: Hello
+cle publique = (3fd,725) 
+cle privee = (79,725) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [276 	27 	6b8 	6b8 	585 	]
+Decoded: Hello
+cle publique = (133,967) 
+cle privee = (213,967) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [690 	177 	3b2 	3b2 	66f 	]
+Decoded: Hello
+cle publique = (145b,1dad) 
+cle privee = (83,1dad) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [11c1 	1998 	183f 	183f 	18b2 	]
+Decoded: Hello
+cle publique = (949,d09) 
+cle privee = (e9,d09) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [8e1 	449 	52b 	52b 	14d 	]
+Decoded: Hello
+cle publique = (f25,1a6f) 
+cle privee = (715,1a6f) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [243 	fc8 	142e 	142e 	268 	]
+Decoded: Hello
+cle publique = (3ab,b71) 
+cle privee = (293,b71) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [5b9 	b0c 	38b 	38b 	775 	]
+Decoded: Hello
+cle publique = (19,85) 
+cle privee = (d,85) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [33 	42 	a 	a 	37 	]
+Decoded: Hello
+cle publique = (823,9e9) 
+cle privee = (343,9e9) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [45 	8ca 	76c 	76c 	4c1 	]
+Decoded: Hello
+cle publique = (a9,14f) 
+cle privee = (19,14f) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [70 	2e 	62 	62 	11e 	]
+Decoded: Hello
+cle publique = (743,e63) 
+cle privee = (3b3,e63) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [98c 	1d8 	981 	981 	76d 	]
+Decoded: Hello
+cle publique = (1af,383) 
+cle privee = (bf,383) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [12a 	8 	27b 	27b 	2e5 	]
+Decoded: Hello
+cle publique = (bcb,1e83) 
+cle privee = (7c3,1e83) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [769 	1554 	ea2 	ea2 	12bb 	]
+Decoded: Hello
+cle publique = (2c5,725) 
+cle privee = (24d,725) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [395 	dd 	172 	172 	3ac 	]
+Decoded: Hello
+cle publique = (d3,227) 
+cle privee = (2b,227) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [114 	1df 	19e 	19e 	18 	]
+Decoded: Hello
+cle publique = (3b3,bed) 
+cle privee = (2ab,bed) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [471 	412 	703 	703 	6d 	]
+Decoded: Hello
+cle publique = (7,887) 
+cle privee = (37f,887) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [6ba 	221 	2e0 	2e0 	14d 	]
+Decoded: Hello
+cle publique = (745,1d93) 
+cle privee = (a8d,1d93) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [bae 	1fe 	352 	352 	432 	]
+Decoded: Hello
+cle publique = (107,719) 
+cle privee = (293,719) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [413 	490 	3ea 	3ea 	198 	]
+Decoded: Hello
+cle publique = (3c7,2d8f) 
+cle privee = (16f,2d8f) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [15ac 	1773 	6c 	6c 	123e 	]
+Decoded: Hello
+cle publique = (13,4d) 
+cle privee = (13,4d) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [2 	11 	26 	26 	22 	]
+Decoded: H"
+cle publique = (1a9,8e7) 
+cle privee = (b9,8e7) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [4f3 	128 	200 	200 	578 	]
+Decoded: Hello
+cle publique = (fb,46d) 
+cle privee = (bf,46d) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [d7 	162 	22f 	22f 	85 	]
+Decoded: Hello
+cle publique = (b,9b) 
+cle privee = (b,9b) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [8f 	65 	4d 	4d 	79 	]
+Decoded: Hello
+cle publique = (fb,2c9) 
+cle privee = (47,2c9) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [27f 	a3 	4d 	4d 	1ed 	]
+Decoded: Hello
+cle publique = (3b9,28a3) 
+cle privee = (1079,28a3) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [2417 	1226 	11fe 	11fe 	6f 	]
+Decoded: Hello
+cle publique = (18b9,1aed) 
+cle privee = (509,1aed) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [48 	1700 	e96 	e96 	6f 	]
+Decoded: Hello
+cle publique = (5c5,71b) 
+cle privee = (14d,71b) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [6db 	31e 	359 	359 	525 	]
+Decoded: Hello
+cle publique = (41f,b6b) 
+cle privee = (20f,b6b) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [a11 	4ab 	381 	381 	275 	]
+Decoded: Hello
+cle publique = (ac5,1cdb) 
+cle privee = (bad,1cdb) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [10ff 	479 	1bb5 	1bb5 	5f4 	]
+Decoded: Hello
+cle publique = (2a1,4f7) 
+cle privee = (151,4f7) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [2d2 	4e8 	4d4 	4d4 	1a7 	]
+Decoded: Hello
+cle publique = (65,80b) 
+cle privee = (26d,80b) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [d6 	1be 	4d5 	4d5 	23b 	]
+Decoded: Hello
+cle publique = (1325,1c01) 
+cle privee = (509,1c01) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [1525 	1959 	dcc 	dcc 	12f7 	]
+Decoded: Hello
+cle publique = (1f,365) 
+cle privee = (97,365) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [1d4 	21d 	30b 	30b 	2a0 	]
+Decoded: Hello
+cle publique = (1013,11f9) 
+cle privee = (fb,11f9) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [5b9 	271 	1124 	1124 	62b 	]
+Decoded: Hello
+cle publique = (a75,288b) 
+cle privee = (105d,288b) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [2625 	304 	2675 	2675 	1b94 	]
+Decoded: Hello
+cle publique = (df,317) 
+cle privee = (df,317) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [240 	264 	2d 	2d 	2de 	]
+Decoded: Hello
+cle publique = (443,c3b) 
+cle privee = (b,c3b) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [ec 	65 	3ef 	3ef 	b02 	]
+Decoded: Hello
+cle publique = (563,77f) 
+cle privee = (1a3,77f) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [2d5 	25e 	e6 	e6 	775 	]
+Decoded: Hello
+cle publique = (165,913) 
+cle privee = (1ed,913) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [166 	25e 	d5 	d5 	724 	]
+Decoded: Hello
+cle publique = (60d,c3b) 
+cle privee = (3b5,c3b) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [528 	650 	5ce 	5ce 	a 	]
+Decoded: Hello
+cle publique = (331,86f) 
+cle privee = (391,86f) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [6fd 	3d9 	6c 	6c 	339 	]
+Decoded: Hello
+cle publique = (17b,319) 
+cle privee = (13,319) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [2d1 	183 	6c 	6c 	2aa 	]
+Decoded: Hello
+cle publique = (1cf,2e1) 
+cle privee = (43,2e1) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [8b 	1f7 	1bb 	1bb 	6f 	]
+Decoded: Hello
+cle publique = (e29,131b) 
+cle privee = (199,131b) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [290 	adb 	882 	882 	72d 	]
+Decoded: Hello
+cle publique = (a8d,12d3) 
+cle privee = (385,12d3) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [cac 	df 	755 	755 	b65 	]
+Decoded: Hello
+cle publique = (97,d9) 
+cle privee = (1f,d9) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [48 	65 	6c 	6c 	6f 	]
+Decoded: Hello
+cle publique = (671,797) 
+cle privee = (41,797) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [276 	3ef 	22a 	22a 	668 	]
+Decoded: Hello
+cle publique = (49,26f) 
+cle privee = (d9,26f) 
+Initial message: Hello 
+Encoded representation : 
+Vector: [4f 	65 	1d8 	1d8 	221 	]
+Decoded: Hello
