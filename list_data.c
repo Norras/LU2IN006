@@ -55,8 +55,8 @@ CellKey *read_public_keys(char *fichier){
     FILE *f=fopen(fichier,"r");
     
     if (f==NULL){
-        printf("ERREUR DE LECTURE\n");
-        return NULL;
+        printf("ERREUR DE LECTURE,FIN DU PROGRAMME\n");
+        exit(1);
     }
     char buffer[256];
     CellKey *list=NULL;
@@ -104,8 +104,8 @@ void print_list_protected(CellProtected *LCP){
 CellProtected *read_protected(){
     FILE *f=fopen("declarations.txt","r");
     if (f==NULL){
-        printf("ERREUR DE LECTURE\n");
-        return NULL;
+        printf("ERREUR DE LECTURE,FIN DU PROGRAMME\n");
+        exit(1);
     }
     // Création des tableaux locaux pour la récupération des éléments
     char buffer[512];
