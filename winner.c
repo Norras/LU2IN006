@@ -72,25 +72,12 @@ void delete_hashtable(HashTable *t){
 }
 
 /*Fonction pour compute_winner
--- Vérifie l'occurence de la clé publique pKey dans la déclaration decl dans la liste list
--- Renvoie 1 si occurence il y a,0 sinon*/
-int verif_declaration(Protected *decl,CellKey *list){
-
-    while (list!=NULL){
-        if (decl->pKey->val==list->data->val && decl->pKey->n==list->data->n){
-            return 1;
-        }
-        list=list->next;
-    }
-    return 0;
-}
-/*Fonction pour compute_winner
 --Vérifie l'occurence de la clé cand dans la liste list
 -- Renvoie 1 si occurence il y a,0 sinon*/
-int verif_candidat(Key *cand,CellKey *list){
+int occurence_key(Key *key,CellKey *list){
     while (list!=NULL){
         //printf("Valeur :%ld\n",cand->val);
-        if (cand->val==list->data->val && cand->n==list->data->n){
+        if (key->val==list->data->val && key->n==list->data->n){
             return 1;
         }
         list=list->next;
@@ -110,12 +97,12 @@ Key *compute_winner(CellProtected *decl,CellKey *candidates,CellKey *voters,int 
     CellProtected *declarations=decl;
     while(declarations!=NULL){
         
-        if (verif_declaration(declarations->data,voters)){
+        if (occurence_key(declarations->data->pKey,voters)){
             
             if (tableV->tab[find_position(tableV,declarations->data->pKey)]->val==0){ // Est-ce que l'électeur n'a pas voté ?
                 tableV->tab[find_position(tableV,declarations->data->pKey)]->val=1;
                 Key *ck=str_to_key(declarations->data->mess);
-                if (verif_candidat(ck,candidates)){ // Est-ce que le candidat est légitime ?
+                if (occurence_key(ck,candidates)){ // Est-ce que le candidat est légitime ?
                     tableC->tab[find_position(tableC,ck)]->val++;
                 }
                 free(ck);
@@ -137,7 +124,6 @@ Key *compute_winner(CellProtected *decl,CellKey *candidates,CellKey *voters,int 
     }
     Key *res=(Key *)malloc(sizeof(Key));
     init_key(res,max->key->val,max->key->n);
-    printf("%d\n",max->val);
     delete_hashtable(tableC);
     delete_hashtable(tableV);
     
