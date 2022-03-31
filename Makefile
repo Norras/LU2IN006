@@ -1,4 +1,4 @@
-all: main main2 list_data
+all: main main2 winner
 
 
 main: main.c prime.c protocol.c
@@ -7,9 +7,11 @@ main: main.c prime.c protocol.c
 main2: main2.c prime.c protocol.c secure.c
 	gcc -Wall -o main2 main2.c prime.c protocol.c secure.c -lm -g
 
-list_data: list_data.c prime.c protocol.c secure.c
-	gcc -Wall -o list_data list_data.c prime.c protocol.c secure.c -lm -g
+# list_data: list_data.c prime.c protocol.c secure.c
+# 	gcc -Wall -o list_data list_data.c prime.c protocol.c secure.c -lm -g
 
+winner: winner.c list_data.c prime.c protocol.c secure.c
+	gcc -Wall -o winner winner.c list_data.c prime.c protocol.c secure.c -lm -g
 clear:
 	rm -rf main
 	rm -rf main2
@@ -17,3 +19,4 @@ clear:
 	rm -rf declarations.txt
 	rm -rf keys.txt
 	rm -rf list_data
+	rm -rf winner

@@ -69,7 +69,6 @@ CellKey *read_public_keys(char *fichier){
         list=add_head_cellkey(list,key);
     }
     fclose(f);
-    print_list_keys(list);
     return list;
 }
 /*Fonction de suppression d'un cellule de liste de clés (CellKey)*/
@@ -92,51 +91,42 @@ void delete_list_keys(CellKey *list){
 /*Fonction d'affichage de liste de déclarations (CellProtected)*/
 void print_list_protected(CellProtected *LCP){
     char *str;
+    int i=0;
     while(LCP!=NULL){
         str=protected_to_str(LCP->data);
-        printf("%s\n",str);
+        printf("%d %s\n",i,str);
         free(str);
         LCP=LCP->next;
+        i++;
     }
 }
 /* Fonction de lecture de keys.txt et declarations.txt pour créer une liste de déclarations (CellProtected)*/
 CellProtected *read_protected(){
-    FILE *f1=fopen("declarations.txt","r");
-    FILE *f2=fopen("keys.txt","r");
-    if (f1==NULL && f2==NULL){
+    FILE *f=fopen("declarations.txt","r");
+    if (f==NULL){
         printf("ERREUR DE LECTURE\n");
         return NULL;
-    } 
-    char buffer1[512];
-    char buffer2[512];
-    CellProtected *list=NULL;
-    // Variables pour la déclaration
-    Protected *element=NULL;
-    // Variables pour la signature
-    Signature *sgn=NULL;
-    char crypted[256];
-    // Variables pour la clé
-    Key *key=NULL;
-    long pval,pn,sval,sn;
-    while((fgets(buffer1,512,f1)!=NULL) && (fgets(buffer2,512,f2)!=NULL)){
-        // Lecture des fichiers
-        sscanf(buffer1,"%s",crypted);
-        sscanf(buffer2,"(%lx,%lx) (%lx,%lx)",&pval,&pn,&sval,&sn);
-        // Allocation des éléments courants
-        key=(Key *)malloc(sizeof(Key));
-        sgn=str_to_signature(crypted);
-        // Déclaration des éléments courants
-        init_key(key,pval,pn);
-
-        element=init_protected(key,decrypt(sgn->tab,sgn->n,pval,pn),sgn);
-        // Ajout de l'élément dans la liste
-        list=add_head_cellprotected(list,element);
     }
-    fclose(f1);
-    fclose(f2);
+    // Création des tableaux locaux pour la récupération des éléments
+    char buffer[512];
+    char keystring[256];
+    char mess[256];
+    char crypted[256];
+    // Création des éléments de structures pour créer un élément CellProtected
+    Key *pKey=NULL;
+    Signature *sgn=NULL;
+    Protected *p=NULL;
+    CellProtected *list=NULL;
+    while (fgets(buffer,512,f)!=NULL){
+        sscanf(buffer,"%s %s %s",keystring,mess,crypted);
+        pKey=str_to_key(keystring);
+        sgn=str_to_signature(crypted);
+        p=init_protected(pKey,strdup(mess),sgn);
+        list=add_head_cellprotected(list,p);
+    }
+    fclose(f);
     return list;
 }
-
 
 /*Fonction de suppression d'une cellule CellProtected*/
 void delete_cell_protected(CellProtected *c){
@@ -161,7 +151,6 @@ void delete_list_protected(CellProtected *list){
         list=tmp;
     }
 }
-
 
 /* Fonction retirant toutes les déclarations non valides (Fausses signatures)*/
 CellProtected *valid_list_protected(CellProtected *list){
@@ -191,15 +180,16 @@ CellProtected *valid_list_protected(CellProtected *list){
 }
 
 /*Main provisoire pour tester le fonctionnement des fonctions ci-dessus et analyse des fuites mémoires*/
-int main(){
+// int main(){
 
-    //CellKey *list=read_public_keys("keys.txt");
-    CellProtected *list=read_protected();
-    //printf("%s\n",decrypt(plist->data->sgn->tab,plist->data->sgn->n,2633,2867));
-    sprintf(list->next->next->next->data->mess,"9cb)");
-    list=valid_list_protected(list);
+//     //CellKey *list=read_public_keys("keys.txt");
+//     CellProtected *list=read_protected();
+
+//     // printf("\n%s\n",protected_to_str(list->next->next->data));
+//     //printf("%s\n",decrypt(plist->data->sgn->tab,plist->data->sgn->n,2633,2867));
+//     // list=valid_list_protected(list);
+//     print_list_protected(list);
+//     delete_list_protected(list);
     
-    printf("\n\n");
-    //print_list_protected(list);
-    delete_list_protected(list);
-}
+//     //print_list_protected(list);
+// }

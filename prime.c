@@ -27,6 +27,9 @@ long modpow_naive(long a,long m,long n){
 
 /*Fonction de calcul de a à la puissance m modulo n*/
 long modpow(long a,long m,long n){
+    if (m==0){
+        return a;
+    }
     if (m<=1){
         return a%n;
     }
@@ -101,17 +104,16 @@ long random_prime_number(int low_size,int up_size,int k){
     is_prime_naive(269851051);
     clock_t e=clock();
     printf("%.5ld ms\n\n",(e-b)*1000/CLOCKS_PER_SEC);
-
     FILE *f=fopen("valeurs.txt","w");
-    for(unsigned long long int i=1;i<1000000000000000000;i=i*10){
+    for(int i=1;i<10000;i=i+1){
         b=clock();
-        res1=modpow_naive(i,100000,7);
+        res1=modpow_naive(2,i,29);
         e=clock();
         b1=clock();
-        res2=modpow(i,100000,7);
+        res2=modpow(2,i,29);
         e1=clock();
-        printf("%lld %ld %ld\n",i,res1,res2);
-        fprintf(f,"%lld %ld %ld\n",i,(e-b)*1000000/CLOCKS_PER_SEC,(e1-b1)*1000000/CLOCKS_PER_SEC);
+        printf("%d %ld %ld\n",i,res1,res2);
+        fprintf(f,"%d %ld %ld\n",i,(e-b)*1000000/CLOCKS_PER_SEC,(e1-b1)*1000000/CLOCKS_PER_SEC);
     }
     fclose(f);
     printf("\n");

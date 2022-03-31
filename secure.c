@@ -63,7 +63,7 @@ char *signature_to_str(Signature * sgn ) {
     char *result=malloc(10*sgn->n*sizeof(char));
     result[0]= '#';
     int pos = 1;
-    char buffer[156];
+    char buffer[256];
     for ( int i=0; i < sgn->n; i++) {
         sprintf(buffer,"%lx",sgn->tab[i]) ;
         for (int j=0; j < strlen(buffer);j++) {
@@ -142,9 +142,9 @@ char *protected_to_str(Protected *pr){
 
 /*Fonction de conversion d'une chaine de caractères en structure Protected (Déclaration signée)*/
 Protected *str_to_protected(char *str){
-    char k[200];
-    char *m=malloc(sizeof(char)*200);
-    char s[200];
+    char k[256];
+    char *m=malloc(sizeof(char)*256);
+    char s[256];
     sscanf(str,"%s %s %s",k,m,s);
     Protected *p=init_protected(str_to_key(k),m,str_to_signature(s));
     free(str);
@@ -167,7 +167,6 @@ void generate_random_data(int nv,int nc){
     Signature *sgn;
     // Ecriture du fichier keys.txt
     for(int i=0;i<nv;i++){
-        srand(time(NULL)*rand());
         kptab[i]=(Key *)malloc(sizeof(Key));
         kstab[i]=(Key *)malloc(sizeof(Key));
         init_pair_keys(kptab[i],kstab[i],3,7);
@@ -189,12 +188,15 @@ void generate_random_data(int nv,int nc){
     // Ecriture du fichier declarations.txt
     for(int i=0;i<nv;i++){
         srand(time(NULL)*rand());
-        mess=key_to_str(cptab[rand()%nc]);  // PB ICI CLE PUBLIQUE AU LIEU DE PRIVE
+        int r=rand()%nc;
+        char *kpstr=key_to_str(kptab[i]);
+        mess=key_to_str(cptab[r]); 
         sgn=sign(mess,kstab[i]);
         str=signature_to_str(sgn);
-        fprintf(declarations,"%s\n",str);
+        fprintf(declarations,"%s %s %s\n",kpstr,mess,str);
         free(str);
         free(mess);
+        free(kpstr);
         free_signature(sgn);
     }
     // Libération des clés

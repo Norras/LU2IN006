@@ -14,7 +14,8 @@ void print_long_vector(long *result,int size){
 }
 
 int main(){
-    srand(time(NULL));
+    for(int i=0;i<100;i++){
+    srand(time(NULL)*rand());
 
 
     // Generation de cle :
@@ -49,5 +50,6 @@ int main(){
     printf("Decoded: %s\n",decoded);
     free(decoded);
     free(crypted);
+    }
     return 0;
 }
