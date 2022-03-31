@@ -187,7 +187,7 @@ CellProtected *valid_list_protected(CellProtected *list){
 
 //     // printf("\n%s\n",protected_to_str(list->next->next->data));
 //     //printf("%s\n",decrypt(plist->data->sgn->tab,plist->data->sgn->n,2633,2867));
-//     list=valid_list_protected(list);
+//     // list=valid_list_protected(list);
 //     print_list_protected(list);
 //     delete_list_protected(list);
     

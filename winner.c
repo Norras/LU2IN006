@@ -41,12 +41,14 @@ HashTable *create_hashtable(CellKey *keys,int size){
         int hash=hash_function(keys->data,size);
         if (table->tab[hash]!=NULL){
             for(int i=0;i<size;i++){
-                if(table->tab[(hash+i)%size]!=NULL){
+                if(table->tab[(hash+i)%size]==NULL){
+                    printf("Indice : %d va être remplie\n",(hash+i)%size);
                     table->tab[(hash+i)%size]=create_hashcell(keys->data);
                     break;
                 }
             }
         } else {
+            printf("Indice : %d va être remplie\n",hash);
             table->tab[hash]=create_hashcell(keys->data);
         }
         keys=keys->next;
@@ -55,18 +57,15 @@ HashTable *create_hashtable(CellKey *keys,int size){
     return table;
 }
 
-void delete_hashtable(HashTable *t){
+void delete_hashtable(HashTable *t){ // La suppression des clés sera fait par la delete_list_keys
     for(int i=0;i<t->size;i++){
-        if (t->tab[i]!=NULL){
-            free(t->tab[i]->key);
             free(t->tab[i]);
-        }
-
     }
     free(t->tab);
     free(t);
 }
 
+/*Fonction de vérification de l'occurence de la clé publique pKey dans la déclaration decl dans la liste list*/
 int verif_declaration(Protected *decl,CellKey *list){
 
     while (list!=NULL){
@@ -77,6 +76,7 @@ int verif_declaration(Protected *decl,CellKey *list){
     }
     return -1;
 }
+/*Fonction de vérification de l'occurence de la clé cand dans la liste list*/
 int verif_candidat(Key *cand,CellKey *list){
     while (list!=NULL){
         //printf("Valeur :%ld\n",cand->val);
@@ -87,12 +87,17 @@ int verif_candidat(Key *cand,CellKey *list){
     }
     return -1;
 }
-
+/*Fonction déterminant le gagnant des élections
+-- Renvoie la clé avec le plus d'occurence dans la liste declarations
+-- Vérifie si les clés dans les déclarations est stockée dans la liste candidates
+-- Vérifie si la clé publique de la déclaration est stockée dans la liste voters*/
 Key *compute_winner(CellProtected *decl,CellKey *candidates,CellKey *voters,int sizeC,int sizeV){
     if (voters==NULL || candidates==NULL || decl==NULL){
         return NULL;
     }
+    printf("POUR TABLEC\n");
     HashTable *tableC=create_hashtable(candidates,sizeC);
+    printf("POUR TABLEV\n");
     HashTable *tableV=create_hashtable(voters,sizeV);
     CellProtected *declarations=decl;
     while(declarations!=NULL){
@@ -112,13 +117,13 @@ Key *compute_winner(CellProtected *decl,CellKey *candidates,CellKey *voters,int 
         declarations=declarations->next;
     }
     HashCell *max=NULL;
-    for(int i=0;i<sizeC;i++){
+    for(int i=0;i<sizeC;i++){ // Recherche du premier élément HashCell non nul pour initialiser le max
         if (tableC->tab[i]!=NULL){
             max=tableC->tab[i];
             break;
         }
     }
-    for(int i=1;i<sizeC;i++){
+    for(int i=1;i<sizeC;i++){ // Comparaison des nombres d'occurences pour déterminer le max
         if (tableC->tab[i]!=NULL && tableC->tab[i]->val > max->val){
             max=tableC->tab[i];
         }
@@ -139,13 +144,16 @@ int main(){
     HashCell *cell=create_hashcell(voters->data);
     int sizeV=50;
     int sizeC=20;
+
     CellProtected *decl=valid_list_protected(read_protected("declarations.txt"));
     //verif_candidat(candidates->data,voters);
     Key *winner=compute_winner(decl,candidates,voters,sizeC,sizeV);
     char *winnerstr=key_to_str(winner);
-    printf("Winner : %s\n",winnerstr);
+    //printf("Winner : %s\n",winnerstr);
     delete_list_protected(decl);
-
+    delete_list_keys(voters);
+    delete_list_keys(candidates);
+    printf("%lx\n",sizeof(HashCell));
     free(cell);
     free(winner);
     free(winnerstr);
