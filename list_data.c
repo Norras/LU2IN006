@@ -15,11 +15,12 @@ void print_long_vector(long *result,int size){
 }
 /*Fonction d'affichage d'une liste de clés*/
 void print_list_keys(CellKey *LCK){
-
+    char *str;
     while(LCK){
-        printf("%s\n",key_to_str(LCK->data));
+        str=key_to_str(LCK->data);
+        printf("%s\n",str);
         printf("\n");
-        LCK=LCK->next;
+        LCK=LCK->next; // LIBERER KEY_TO_STRs
     }
 }
 /*Fonction de création d'un élément CellKey*/
@@ -55,8 +56,8 @@ CellKey *read_public_keys(char *fichier){
     FILE *f=fopen(fichier,"r");
     
     if (f==NULL){
-        printf("ERREUR DE LECTURE\n");
-        return NULL;
+        printf("ERREUR DE LECTURE,FIN DU PROGRAMME\n");
+        exit(1);
     }
     char buffer[256];
     CellKey *list=NULL;
@@ -104,8 +105,8 @@ void print_list_protected(CellProtected *LCP){
 CellProtected *read_protected(){
     FILE *f=fopen("declarations.txt","r");
     if (f==NULL){
-        printf("ERREUR DE LECTURE\n");
-        return NULL;
+        printf("ERREUR DE LECTURE,FIN DU PROGRAMME\n");
+        exit(1);
     }
     // Création des tableaux locaux pour la récupération des éléments
     char buffer[512];

@@ -151,6 +151,17 @@ Protected *str_to_protected(char *str){
     return p;
 }
 
+/*Fonction pour generate_random_data
+-- Empêche la redondance de candidats dans candidates.txt
+-- Renvoie 1 si occurence il y a,0 sinon*/
+int occurence_int(int val,int *tab,int size){
+    for(int i=0;i<size;i++){
+        if (val==tab[i]){
+            return 1;
+        }
+    }
+    return 0;
+}
 /*Fonction de création de données d'élections
 -- Les données sont stockés dans les fichiers keys.txt,candidates.txt et declarations.txt*/
 void generate_random_data(int nv,int nc){
@@ -160,6 +171,7 @@ void generate_random_data(int nv,int nc){
     Key *kptab[nv];
     Key *kstab[nv];
     Key *cptab[nc];
+    int nonocc[nc];
     char *mess;
     char *str;
     char *str2;
@@ -180,7 +192,11 @@ void generate_random_data(int nv,int nc){
     for(int i=0;i<nc;i++){
         srand(time(NULL)*rand());
         rdm=rand()%nv;
+        while(occurence_int(rdm,nonocc,i+1)){
+            rdm=rand()%nv;
+        }
         cptab[i]=kptab[rdm];
+        nonocc[i]=rdm;
         str=key_to_str(cptab[i]);
         fprintf(candidates,"%s\n",str);
         free(str);
