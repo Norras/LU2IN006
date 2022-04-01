@@ -16,11 +16,12 @@ void print_long_vector(long *result,int size){
 /*Fonction d'affichage d'une liste de clés*/
 void print_list_keys(CellKey *LCK){
     char *str;
-    while(LCK){
-        str=key_to_str(LCK->data);
+    CellKey *tmp=LCK;
+    while(tmp){
+        str=key_to_str(tmp->data);
         printf("%s\n",str);
-        printf("\n");
-        LCK=LCK->next; // LIBERER KEY_TO_STRs
+        free(str);
+        tmp=tmp->next;
     }
 }
 /*Fonction de création d'un élément CellKey*/
@@ -92,13 +93,12 @@ void delete_list_keys(CellKey *list){
 /*Fonction d'affichage de liste de déclarations (CellProtected)*/
 void print_list_protected(CellProtected *LCP){
     char *str;
-    int i=0;
-    while(LCP!=NULL){
-        str=protected_to_str(LCP->data);
-        printf("%d %s\n",i,str);
+    CellProtected *tmp=LCP;
+    while(tmp!=NULL){
+        str=protected_to_str(tmp->data);
+        printf("%s\n",str);
         free(str);
-        LCP=LCP->next;
-        i++;
+        tmp=tmp->next;
     }
 }
 /* Fonction de lecture de keys.txt et declarations.txt pour créer une liste de déclarations (CellProtected)*/
@@ -183,14 +183,15 @@ CellProtected *valid_list_protected(CellProtected *list){
 /*Main provisoire pour tester le fonctionnement des fonctions ci-dessus et analyse des fuites mémoires*/
 // int main(){
 
-//     //CellKey *list=read_public_keys("keys.txt");
-//     CellProtected *list=read_protected();
+//     CellKey *list=read_public_keys("keys.txt");
+//     //CellProtected *list=read_protected();
 
 //     // printf("\n%s\n",protected_to_str(list->next->next->data));
 //     //printf("%s\n",decrypt(plist->data->sgn->tab,plist->data->sgn->n,2633,2867));
 //     // list=valid_list_protected(list);
-//     print_list_protected(list);
-//     delete_list_protected(list);
-    
 //     //print_list_protected(list);
+//     //delete_list_protected(list);
+    
+//     print_list_keys(list);
+//     delete_list_keys(list);
 // }
