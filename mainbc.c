@@ -29,7 +29,9 @@ int main(){
     b->votes=read_protected();
     b->previous_hash=NULL;
     b->hash=(unsigned char *)malloc(sizeof(unsigned char)*512);
-    compute_proof_of_work(b,2);
-
+    clock_t begin=time(NULL);
+    compute_proof_of_work(b,4);
+    clock_t end=time(NULL);
+    printf("Time :%.5ld\n",(end-begin)*1000/CLOCKS_PER_SEC);
 }
 

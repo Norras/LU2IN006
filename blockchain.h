@@ -17,5 +17,6 @@ unsigned char *func_sha(const char *str);
 char *block_to_str(Block *block);
 int compute_proof_of_work(Block *b,int d);
 int verify_block(Block *b,int d);
+int compute_proof_of_work2(Block *b,int d);
 
 #endif
