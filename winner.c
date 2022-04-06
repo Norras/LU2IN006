@@ -33,6 +33,7 @@ int find_position(HashTable *t,Key *key){
     return hash_function(key,t->size);
 }
 
+
 /*Fonction de création d'une table de hachage à partir d'une liste de clés*/
 HashTable *create_hashtable(CellKey *keys,int size){
     HashTable *table=(HashTable *)malloc(sizeof(HashTable));

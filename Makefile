@@ -1,4 +1,4 @@
-all: main main2 winner
+all: main main2 mainbc winner
 
 
 main: main.c prime.c protocol.c
@@ -10,10 +10,14 @@ main2: main2.c prime.c protocol.c secure.c
 # list_data: list_data.c prime.c protocol.c secure.c
 # 	gcc -Wall -o list_data list_data.c prime.c protocol.c secure.c -lm -g
 
+mainbc: mainbc.c blockchain.c list_data.c prime.c protocol.c secure.c
+	gcc -Wall -o mainbc mainbc.c blockchain.c list_data.c prime.c protocol.c secure.c -lm -lssl -lcrypto
+
 winner: winner.c list_data.c prime.c protocol.c secure.c
 	gcc -Wall -o winner winner.c list_data.c prime.c protocol.c secure.c -lm -g
 clear:
 	rm -rf main
+	rm -rf mainbc
 	rm -rf main2
 	rm -rf candidates.txt
 	rm -rf declarations.txt
