@@ -16,6 +16,7 @@ mainbc: mainbc.c blockchain.c list_data.c prime.c protocol.c secure.c
 winner: winner.c list_data.c prime.c protocol.c secure.c
 	gcc -Wall -o winner winner.c list_data.c prime.c protocol.c secure.c -lm -g
 clear:
+	rm -rf *.exe
 	rm -rf main
 	rm -rf mainbc
 	rm -rf main2
