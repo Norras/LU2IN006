@@ -26,6 +26,7 @@ void delete_cell_key(CellKey *c);
 void print_list_protected(CellProtected *LCP);
 void print_list_keys(CellKey *LCK);
 CellProtected *valid_list_protected(CellProtected *list);
+char *CPlist_to_str(CellProtected *list);
 
 
 #endif

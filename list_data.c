@@ -180,6 +180,20 @@ CellProtected *valid_list_protected(CellProtected *list){
     return list;
 }
 
+char *CPlist_to_str(CellProtected *list){
+    CellProtected *tmp=list;
+    char *res=malloc(sizeof(char));
+    char *ptmp;
+    int taille=sizeof(char);
+    while(tmp!=NULL){
+        ptmp=protected_to_str(tmp->data);
+        taille+=strlen(ptmp)+1;
+        res=realloc(res,taille);
+        tmp=tmp->next;
+        free(ptmp);
+    }
+    return res;
+}
 /*Main provisoire pour tester le fonctionnement des fonctions ci-dessus et analyse des fuites mémoires*/
 // int main(){
 

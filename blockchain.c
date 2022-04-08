@@ -47,16 +47,20 @@ Block *read_block(char *filename){
 }
 
 char *block_to_str(Block *block){
-    char *res=(char *)malloc(sizeof(char)*2056);
-    char cpstr[1024];
-    char cpstrtmp[256];
+    char *res=(char *)malloc(sizeof(char)*256);
+    char *cpstrtmp;
+    int taille=256;
     CellProtected *tmp=block->votes;
+    sprintf(res,"%s %s %s %d\n",key_to_str(block->author),block->previous_hash,block->hash,block->nonce);
     while (tmp!=NULL){
-        sprintf(cpstrtmp,"%s %s %s\n",key_to_str(tmp->data->pKey),tmp->data->mess,signature_to_str(tmp->data->sgn));
-        strcat(cpstr,cpstrtmp);
+        cpstrtmp=protected_to_str(tmp->data);
+        taille+=strlen(cpstrtmp)+1;
+        res=(char *)realloc(res,taille);
+        strcat(res,cpstrtmp);
+        free(cpstrtmp);
         tmp=tmp->next;
     }
-    sprintf(res,"%s %s \n%s %d",key_to_str(block->author),block->previous_hash,cpstr,block->nonce);
+    
     return res;
 }
 
@@ -73,16 +77,19 @@ void affichage(unsigned char *hash,int j,char *message){
 
 int compute_proof_of_work(Block *b,int d){
     unsigned char *hash;
-    char nonce[256];
+    
     char zeros[d+1];
     memset(zeros,'0',d);
     zeros[d]='\0';
-    for(int i=0;i<2147483647;i++){
-        sprintf(nonce,"%d",i);
-        hash=SHA256(nonce,strlen(nonce),0);
+    char *block=CPlist_to_str(b->votes);
+    char tohash[strlen(block)+sizeof(int)];
+    printf("%s\n",zeros);
+    for(int i=0;i<INT32_MAX;i++){
+        sprintf(tohash,"%s %d",block,i);
+        hash=SHA256((unsigned char *)tohash,strlen(tohash),0);
         hash[d]='\0';
-        if (strcmp(hash,zeros)==0){
-            printf("%d -- VALIDE\n",i);
+        if (strcmp((const char *)hash,zeros)==0){
+            affichage(hash,i,"VALIDE !");
             b->nonce=i;
             return i;
         }
@@ -92,6 +99,29 @@ int compute_proof_of_work(Block *b,int d){
     return -1;
 }
 
+// int perfs(Block *b,int d){
+//     unsigned char *hash;
+//     char nonce[10];
+//     char zeros[d+1];
+//     memset(zeros,'0',d);
+//     zeros[d]='\0';
+//     clock_t begin=time(NULL);
+//     for(int i=0;i<100000000;i++){
+//         // sprintf(nonce,"%d",i);
+//         hash=SHA256("25531",6,0);
+//         // hash[d]='\0';
+//         // if (strcmp(hash,zeros)==0){
+//         //     printf("%d -- VALIDE\n",i);
+//         //     b->nonce=i;
+//         //     return i;
+//         // }
+//     }
+//     clock_t end=time(NULL);
+
+//     printf("TEMPS CALCULÉ : %f\n",difftime(end,begin));
+//     return -1;
+// }
+
 // int compute_proof_of_work2(Block *b,int d){
 //     unsigned char *hash;
 //     char nonce[256];
@@ -100,26 +130,29 @@ int compute_proof_of_work(Block *b,int d){
 //     char zeros[d+1];
 //     memset(zeros,'0',d);
 //     zeros[d]='\0';
-//     int i=0;
+//     hash[d]='\0';
+//     unsigned int i=0;
 //     while(strcmp((char *)hash,zeros)!=0){
 //         sprintf(nonce,"%d",i);
 //         hash=SHA256(nonce,strlen(nonce),0);
+//         hash[d]='\0';
 //         i++;
 //     }
+//     printf("%d\n",i);
 //     b->nonce=i;
 //     return i;
 // }
 int verify_block(Block *b,int d){
     char nonce[256];
+    char zeros[d+1];
+    
+    memset(zeros,'0',d);
+    zeros[d]='\0';
     sprintf(nonce,"%d",b->nonce);
     unsigned char *hash=SHA256((const unsigned char *)nonce,strlen(nonce),0);
-    if (strlen((char *)hash)< d){
-        return 0;
+
+    if (strcmp((const char *)hash,zeros)==0){ // STRCMP RENVOIE 0 si les deux chaînes sont égales (0 étant le booléen pour false..)
+        return 1;
     }
-    for(int i=0;i<d;i++){
-        if (hash[i]!='0'){
-            return 0;
-        }
-    }
-    return 1;
+    return 0;
 }
