@@ -11,6 +11,13 @@ typedef struct block{
     int nonce;
 }Block;
 
+typedef struct block_tree_cell{
+    Block *block;
+    struct block_tree_cell *father;
+    struct block_tree_cell *firstChild;
+    struct block_tree_cell *nextBro;
+    int height;
+}CellTree;
 void save_block(Block *b);
 Block *read_block(char *filename);
 unsigned char *func_sha(const char *str);
@@ -19,5 +26,10 @@ int compute_proof_of_work(Block *b,int d);
 int compute_proof_of_work2(Block *b,int d);
 int verify_block(Block *b,int d);
 int perfs(Block *b,int d);
+void delete_block(Block *b);
 
+CellTree *create_node(Block *b);
+int update_height(CellTree *father,CellTree *child);
+void add_child(CellTree *father,CellTree *child);
+void print_tree(CellTree *racine);
 #endif

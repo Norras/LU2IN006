@@ -122,26 +122,6 @@ int compute_proof_of_work(Block *b,int d){
 //     return -1;
 // }
 
-// int compute_proof_of_work2(Block *b,int d){
-//     unsigned char *hash;
-//     char nonce[256];
-//     sprintf(nonce,"0");
-//     hash=SHA256(nonce,strlen(nonce),0);
-//     char zeros[d+1];
-//     memset(zeros,'0',d);
-//     zeros[d]='\0';
-//     hash[d]='\0';
-//     unsigned int i=0;
-//     while(strcmp((char *)hash,zeros)!=0){
-//         sprintf(nonce,"%d",i);
-//         hash=SHA256(nonce,strlen(nonce),0);
-//         hash[d]='\0';
-//         i++;
-//     }
-//     printf("%d\n",i);
-//     b->nonce=i;
-//     return i;
-// }
 int verify_block(Block *b,int d){
     char nonce[256];
     char zeros[d+1];
@@ -155,4 +135,79 @@ int verify_block(Block *b,int d){
         return 1;
     }
     return 0;
+}
+
+
+void delete_block(Block *b){
+    free(b->hash);
+    free(b->previous_hash);
+    CellProtected *tmp;
+    while(b->votes!=NULL){
+        tmp=b->votes->next;
+        free(b->votes);
+        b->votes=tmp;
+    }
+    free(b);
+}
+
+
+CellTree *create_node(Block *b){
+    CellTree *cell=(CellTree *)malloc(sizeof(CellTree));
+    cell->block=b;
+    cell->father=NULL;
+    cell->firstChild=NULL;
+    cell->nextBro=NULL;
+    cell->height=0;
+
+    return cell;
+}
+
+int update_height(CellTree *father,CellTree *child){
+    int maximum=max(father->height,child->height+1);
+    if (max==father->height){
+        return 0;
+    }
+    father->height=max;
+    return 1;
+}
+
+void add_child(CellTree *father,CellTree *child){
+    // Ajout en tête du fils
+    child->nextBro=father->firstChild;
+    father->firstChild=child;
+
+    // Modification de la hauteur des parents
+    CellTree *ftmp=father;
+    CellTree *ctmp=father->firstChild;
+    while (ftmp!=NULL){
+        update_height(ftmp,ctmp);
+        ftmp=ftmp->father;
+        ctmp=ctmp->father;
+    }
+}
+
+void print_tree(CellTree *racine){
+    if (racine==NULL){
+        return;
+    }
+    printf("%d -- ",racine->height);
+    for(int i=0;i<SHA256_DIGEST_LENGTH;i++){
+        printf("%02x",racine->block->hash);
+    }
+    print_tree(racine->nextBro);
+    print_tree(racine->firstChild);
+
+}
+
+void delete_node(CellTree *node){
+    delete_block(node->block);
+    CellTree *child=node->firstChild;
+    while (child!=NULL){
+        
+    }
+    free(node);
+}
+
+void delete_tree(CellTree *tree){
+
 }
