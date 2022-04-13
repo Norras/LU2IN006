@@ -37,4 +37,5 @@ void delete_tree(CellTree *tree);
 CellTree *highest_child(CellTree *cell);
 CellTree *last_node(CellTree *tree);
 
+
 #endif
