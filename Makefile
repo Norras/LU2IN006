@@ -11,7 +11,7 @@ main2: main2.c prime.c protocol.c secure.c
 # 	gcc -Wall -o list_data list_data.c prime.c protocol.c secure.c -lm -g
 
 mainbc: mainbc.c blockchain.c list_data.c prime.c protocol.c secure.c
-	gcc -Wall -o mainbc mainbc.c blockchain.c list_data.c prime.c protocol.c secure.c -lm -lssl -lcrypto
+	gcc -Wall -o mainbc mainbc.c blockchain.c list_data.c prime.c protocol.c secure.c -lm -lssl -lcrypto -g
 
 winner: winner.c list_data.c prime.c protocol.c secure.c
 	gcc -Wall -o winner winner.c list_data.c prime.c protocol.c secure.c -lm -g

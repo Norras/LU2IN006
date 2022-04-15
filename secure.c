@@ -131,7 +131,7 @@ char *protected_to_str(Protected *pr){
     if (pr==NULL){
         return "";
     }
-    char *res=malloc(sizeof(char)*256);
+    char *res=malloc(sizeof(char)*512);
     char *k=key_to_str(pr->pKey);
     char *s=signature_to_str(pr->sgn);
     sprintf(res,"%s %s %s",k,pr->mess,s);
@@ -192,7 +192,7 @@ void generate_random_data(int nv,int nc){
     for(int i=0;i<nc;i++){
         srand(time(NULL)*rand());
         rdm=rand()%nv;
-        while(occurence_int(rdm,nonocc,i+1)){
+        while(occurence_int(rdm,nonocc,i)){
             rdm=rand()%nv;
         }
         cptab[i]=kptab[rdm];

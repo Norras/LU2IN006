@@ -48,26 +48,60 @@ Block *read_block(char *filename){
 }
 
 char *block_to_str(Block *block){
-    char *res=(char *)malloc(sizeof(char)*256);
+    char *res=(char *)malloc(sizeof(char)*1024);
+    char *ctmp=(char *)malloc(sizeof(char)*256);
+    char *key=key_to_str(block->author);
+    ctmp[0]='\0';
     char *cpstrtmp;
-    int taille=256;
     CellProtected *tmp=block->votes;
-    sprintf(res,"%s %s %s %d\n",key_to_str(block->author),block->previous_hash,block->hash,block->nonce);
     while (tmp!=NULL){
         cpstrtmp=protected_to_str(tmp->data);
-        taille+=strlen(cpstrtmp)+1;
-        res=(char *)realloc(res,taille);
-        strcat(res,cpstrtmp);
+        ctmp=(char *)realloc(ctmp,strlen(ctmp)+128*sizeof(char));
+        strcat(ctmp,cpstrtmp);
         free(cpstrtmp);
         tmp=tmp->next;
     }
-    
+    res=realloc(res,strlen(ctmp)+256*sizeof(char));
+    sprintf(res," %s %s %s %d\n",key,block->previous_hash,ctmp,block->nonce);
+    free(key);
+    free(ctmp);
+    return res;
+}
+/*Exactement pareil que block_to_str mais sans le nonce
+-- Question d'optimisations pour compute_proof_of_work*/
+char *block_to_str_bis(Block *block){
+    char *res=(char *)malloc(sizeof(char)*1024);
+    char *ctmp=(char *)malloc(sizeof(char)*256);
+    char *key=key_to_str(block->author);
+    ctmp[0]='\0';
+    char *cpstrtmp;
+    CellProtected *tmp=block->votes;
+    while (tmp!=NULL){
+        cpstrtmp=protected_to_str(tmp->data);
+        ctmp=(char *)realloc(ctmp,strlen(ctmp)+128*sizeof(char));
+        strcat(ctmp,cpstrtmp);
+        free(cpstrtmp);
+        tmp=tmp->next;
+    }
+    res=realloc(res,strlen(ctmp)+256*sizeof(char));
+    sprintf(res," %s %s %s\n",key,block->previous_hash,ctmp);
+    free(key);
+    free(ctmp);
     return res;
 }
 
 unsigned char *func_sha(const char *str){
-    return SHA256((const unsigned char *)str,strlen(str),0);
+    unsigned char *res=(unsigned char *)malloc(sizeof(char)*256);
+    res[0]='\0';
+    unsigned char *d=SHA256((unsigned char *)str,strlen(str),0);
+    char c[256];
+    for(int i=0;i<SHA256_DIGEST_LENGTH;i++){
+        sprintf(c,"%02x",d[i]);
+        strcat((char *)res,c);
+    }
+    return res;
 }
+
 void affichage(unsigned char *hash,int j,char *message){
     for(int i=0;i<SHA256_DIGEST_LENGTH;i++){
         printf("%02x",hash[i]);
@@ -76,28 +110,30 @@ void affichage(unsigned char *hash,int j,char *message){
 }
 
 
-int compute_proof_of_work(Block *b,int d){
+void compute_proof_of_work(Block *b,int d){
     unsigned char *hash;
-    
     char zeros[d+1];
     memset(zeros,'0',d);
     zeros[d]='\0';
-    char *block=CPlist_to_str(b->votes);
-    char tohash[strlen(block)+sizeof(int)];
+    char *block=block_to_str_bis(b);
+    char tohash[strlen(block)+sizeof(int)+1];
     printf("%s\n",zeros);
     for(int i=0;i<INT32_MAX;i++){
-        sprintf(tohash,"%s %d",block,i);
-        hash=SHA256((unsigned char *)tohash,strlen(tohash),0);
+        b->nonce=i;
+        sprintf(tohash,"%s%d",block,i);
+        hash=func_sha(tohash);
         hash[d]='\0';
         if (strcmp((const char *)hash,zeros)==0){
             affichage(hash,i,"VALIDE !");
+            b->hash=hash;
             b->nonce=i;
-            return i;
+            free(block);
+            return;
         }
+        free(hash);
     }
     b->nonce=-1;
     printf("On a rien trouvé\n");
-    return -1;
 }
 
 int verify_block(Block *b,int d){
@@ -117,8 +153,13 @@ int verify_block(Block *b,int d){
 
 
 void delete_block(Block *b){
-    free(b->hash);
-    free(b->previous_hash);
+    if (b->hash!=NULL){
+        free(b->hash);
+    }
+    
+    if (b->previous_hash!=NULL){
+        free(b->previous_hash);
+    }
     CellProtected *tmp;
     while(b->votes!=NULL){
         tmp=b->votes->next;
@@ -174,7 +215,7 @@ void print_tree(CellTree *racine,int prof){
     CellTree *cour=racine;
     memset(tabs,'\t',prof);
     while (cour!=NULL){
-        printf("%sHauteur:%s Hash:%s\n",tabs,cour->block->hash);
+        printf("%sHauteur:%d Hash:%s\n",tabs,cour->height,cour->block->hash);
         print_tree(cour->firstChild,++prof);
         cour=cour->nextBro;
     }
@@ -219,7 +260,8 @@ CellTree *last_node(CellTree *tree){
     return last_node(highest_child(tree));
 }
 
-void fusion_cell_protected(CellProtected **first, CellProtected **second){
+/*Fonction de fusion de deux listes chaînées de CellProtected*/
+void fusion_cell_protected(CellProtected *first, CellProtected *second){
     if (first==NULL){
         first=second;
         return;
@@ -231,7 +273,9 @@ void fusion_cell_protected(CellProtected **first, CellProtected **second){
     tmp->next=second;
 }
 
-
+/*Fonction de fusion des listes de déclaration contenues dans la plus longue chaîne d'éléments
+-- Amélioration dans le parcours résultat 
+O(2^n) environ => O(n)  */
 CellProtected *fusion_highest_CP(CellTree *racine){
     CellProtected *res=racine->block->votes;
     CellProtected *tmp=racine->block->votes;
