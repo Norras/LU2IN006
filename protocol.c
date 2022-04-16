@@ -39,6 +39,10 @@ long *encrypt(char *chaine,long s,long n){
     int i=0;
     int c;
     long *res=malloc(sizeof(long)*strlen(chaine));
+    if (res==NULL){
+        printf("ERREUR MALLOC\n");
+        exit(-1);
+    }
     while (chaine[i]!='\0'){
         c=chaine[i];
         res[i]=modpow(c,s,n);
@@ -54,6 +58,10 @@ char *decrypt(long *crypted,int size,long u,long n){
         return NULL;
     }
     char *res=(char *)malloc(sizeof(char)*size+1);
+    if (res==NULL){
+        printf("ERREUR MALLOC\n");
+        exit(-1);
+    }
     int i;
     for(i=0;i<size;i++){
         res[i]=(char)modpow(crypted[i],u,n);

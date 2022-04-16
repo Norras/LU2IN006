@@ -27,6 +27,10 @@ void print_list_keys(CellKey *LCK){
 /*Fonction de création d'un élément CellKey*/
 CellKey *create_cell_key(Key *key){
     CellKey *cell=(CellKey *)malloc(sizeof(CellKey));
+    if (cell==NULL){
+        printf("ERREUR MALLOC\n");
+        exit(-1);
+    }
     cell->data=key;
     cell->next=NULL;
     return cell;
@@ -34,6 +38,10 @@ CellKey *create_cell_key(Key *key){
 /*Fonction de création d'un élément CellProtected*/
 CellProtected *create_cell_protected(Protected *pr){
     CellProtected *cell=(CellProtected *)malloc(sizeof(CellProtected));
+    if (cell==NULL){
+        printf("ERREUR MALLOC\n");
+        exit(-1);
+    }
     cell->data=pr;
     cell->next=NULL;
     return cell;
@@ -66,6 +74,10 @@ CellKey *read_public_keys(char *fichier){
     long val,n;
     while(fgets(buffer,256,f)!=NULL){
         key=(Key *)malloc(sizeof(Key));
+        if (key==NULL){
+            printf("ERREUR MALLOC\n");
+            exit(-1);
+        }
         sscanf(buffer,"(%lx,%lx)",&val,&n);
         init_key(key,val,n);
         list=add_head_cellkey(list,key);
@@ -78,7 +90,9 @@ void delete_cell_key(CellKey *c){
     if (c==NULL){
         return;
     }
-    free(c->data);
+    if (c->data!=NULL){
+        free(c->data);
+    }
     free(c);
 }
 /*Fonction de suppression de liste de clés (CellKey)*/
@@ -102,8 +116,8 @@ void print_list_protected(CellProtected *LCP){
     }
 }
 /* Fonction de lecture de keys.txt et declarations.txt pour créer une liste de déclarations (CellProtected)*/
-CellProtected *read_protected(){
-    FILE *f=fopen("declarations.txt","r");
+CellProtected *read_protected(char *filename){
+    FILE *f=fopen(filename,"r");
     if (f==NULL){
         printf("ERREUR DE LECTURE,FIN DU PROGRAMME\n");
         exit(1);
@@ -134,11 +148,7 @@ void delete_cell_protected(CellProtected *c){
     if (c==NULL){
         return;
     }
-    free(c->data->mess);
-    free(c->data->pKey);
-    free(c->data->sgn->tab);
-    free(c->data->sgn);
-    free(c->data);
+    free_protected(c->data);
     free(c);
 }
 
@@ -147,7 +157,6 @@ void delete_list_protected(CellProtected *list){
     CellProtected *tmp;
     while (list!=NULL){
         tmp=list->next;
-        //free(list->data->mess);
         delete_cell_protected(list);
         list=tmp;
     }
@@ -180,6 +189,18 @@ CellProtected *valid_list_protected(CellProtected *list){
     return list;
 }
 
+/*Fonction de fusion de deux listes chaînées de CellProtected*/
+void fusion_cell_protected(CellProtected *first, CellProtected *second){
+    if (first==NULL){
+        first=second;
+        return;
+    }
+    CellProtected *tmp=first;
+    while(tmp->next!=NULL){
+        tmp=tmp->next;
+    }
+    tmp->next=second;
+}
 // char *CPlist_to_str(CellProtected *list){
 //     CellProtected *tmp=list;
 //     char *res=(char *)malloc(256*sizeof(char));

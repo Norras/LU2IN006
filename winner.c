@@ -11,6 +11,10 @@
 -- Stocke une clé et une valeur entière*/
 HashCell *create_hashcell(Key *key){
     HashCell *res=(HashCell *)malloc(sizeof(HashCell));
+    if (res==NULL){
+        printf("ERREUR MALLOC\n");
+        exit(-1);
+    }
     res->key=key;
     res->val=0;
     return res;
@@ -37,8 +41,16 @@ int find_position(HashTable *t,Key *key){
 /*Fonction de création d'une table de hachage à partir d'une liste de clés*/
 HashTable *create_hashtable(CellKey *keys,int size){
     HashTable *table=(HashTable *)malloc(sizeof(HashTable));
+    if (table==NULL){
+        printf("ERREUR MALLOC\n");
+        exit(-1);
+    }
     table->size=size;
     table->tab=(HashCell **)malloc(sizeof(HashCell *)*size);
+    if (table->tab==NULL){
+        printf("ERREUR MALLOC\n");
+        exit(-1);
+    }
     for(int i=0;i<size;i++){ // Initialisation des éléments à NULL (étant donné que ce n'est pas le cas automatiquement)
         table->tab[i]=NULL;
     }
@@ -124,6 +136,10 @@ Key *compute_winner(CellProtected *decl,CellKey *candidates,CellKey *voters,int 
         }
     }
     Key *res=(Key *)malloc(sizeof(Key));
+    if (res==NULL){
+        printf("ERREUR MALLOC\n");
+        exit(-1);
+    }
     init_key(res,max->key->val,max->key->n);
     delete_hashtable(tableC);
     delete_hashtable(tableV);

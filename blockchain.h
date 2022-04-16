@@ -18,13 +18,14 @@ typedef struct block_tree_cell{
     struct block_tree_cell *nextBro;
     int height;
 }CellTree;
-void save_block(Block *b);
+void save_block(Block *b,char *filename);
 Block *read_block(char *filename);
 unsigned char *func_sha(const char *str);
 char *block_to_str(Block *block);
 void compute_proof_of_work(Block *b,int d);
 int verify_block(Block *b,int d);
 void delete_block(Block *b);
+void create_block(CellTree *tree,Key *author,int d);
 
 CellTree *create_node(Block *b);
 int update_height(CellTree *father,CellTree *child);
@@ -34,7 +35,6 @@ void delete_node(CellTree *node);
 void delete_tree(CellTree *tree);
 CellTree *highest_child(CellTree *cell);
 CellTree *last_node(CellTree *tree);
-void fusion_cell_protected(CellProtected *first, CellProtected *second);
 CellProtected *fusion_highest_CP(CellTree *racine);
 
 #endif

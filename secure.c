@@ -27,6 +27,10 @@ void init_pair_keys(Key *pKey,Key *sKey,long low_size,long up_size){
 /*Fonction de conversion d'une clé en chaine de caractères*/
 char *key_to_str(Key *key){
     char *res=(char *)malloc(sizeof(char)*256);
+    if (res==NULL){
+        printf("ERREUR MALLOC\n");
+        exit(-1);
+    }
     sprintf(res,"(%lx,%lx)",key->val,key->n);
     return res;
 }
@@ -34,6 +38,10 @@ char *key_to_str(Key *key){
 /*Fonction de conversion d'une chaine de caractères en clé*/
 Key *str_to_key(char *str){
     Key *key=(Key *)malloc(sizeof(Key));
+    if (key==NULL){
+        printf("ERREUR MALLOC\n");
+        exit(-1);
+    }
     sscanf(str,"(%lx,%lx)",&(key->val),&(key->n));
     return key;
 }
@@ -41,13 +49,22 @@ Key *str_to_key(char *str){
 /*Fonction d'initialisation d'une signature*/
 Signature* init_signature(long* content, int size){
     Signature *res=(Signature *)malloc(sizeof(Signature));
+    if (res==NULL){
+        printf("ERREUR MALLOC\n");
+        exit(-1);
+    }
     res->tab=content;
     res->n=size;
     return res;
 }
 /*Fonction de libération d'une signature*/
 void free_signature(Signature *sgn){
-    free(sgn->tab);
+    if (sgn==NULL){
+        return;
+    }
+    if (sgn->tab!=NULL){
+        free(sgn->tab);
+    }
     free(sgn);
 }
 /*Fonction de création d'une signature
@@ -61,6 +78,10 @@ Signature* sign(char* mess, Key* sKey){
 /*Fonction de conversion d'une signature en chaine de caractères*/
 char *signature_to_str(Signature * sgn ) {
     char *result=malloc(10*sgn->n*sizeof(char));
+    if (result==NULL){
+        printf("ERREUR MALLOC\n");
+        exit(-1);
+    }
     result[0]= '#';
     int pos = 1;
     char buffer[256];
@@ -82,6 +103,10 @@ char *signature_to_str(Signature * sgn ) {
 Signature *str_to_signature(char *str){
     int len=strlen(str);
     long *content=(long *)malloc(sizeof(long)*len);
+    if (content==NULL){
+        printf("ERREUR MALLOC\n");
+        exit(-1);
+    }
     int num=0;
     char buffer[256];
     int pos=0;
@@ -104,6 +129,10 @@ Signature *str_to_signature(char *str){
 /*Fonction d'initialisation d'une structure Protected (Déclaration signée)*/
 Protected* init_protected(Key* pKey, char* mess, Signature* sgn){
     Protected *res=(Protected *)malloc(sizeof(Protected));
+    if (res==NULL){
+        printf("ERREUR MALLOC\n");
+        exit(-1);
+    }
     res->pKey=pKey;
     res->mess=mess;
     res->sgn=sgn;
@@ -111,8 +140,15 @@ Protected* init_protected(Key* pKey, char* mess, Signature* sgn){
 }
 
 void free_protected(Protected *p){
-    free(p->pKey);
-    free(p->mess);
+    if (p==NULL){
+        return;
+    }
+    if (p->pKey!=NULL){
+        free(p->pKey);
+    }
+    if (p->mess!=NULL){
+        free(p->mess);
+    }
     free_signature(p->sgn);
     free(p);
 }
@@ -132,6 +168,10 @@ char *protected_to_str(Protected *pr){
         return "";
     }
     char *res=malloc(sizeof(char)*512);
+    if (res==NULL){
+        printf("ERREUR MALLOC\n");
+        exit(-1);
+    }
     char *k=key_to_str(pr->pKey);
     char *s=signature_to_str(pr->sgn);
     sprintf(res,"%s %s %s",k,pr->mess,s);
@@ -144,6 +184,10 @@ char *protected_to_str(Protected *pr){
 Protected *str_to_protected(char *str){
     char k[256];
     char *m=malloc(sizeof(char)*256);
+    if (m==NULL){
+        printf("ERREUR MALLOC\n");
+        exit(-1);
+    }
     char s[256];
     sscanf(str,"%s %s %s",k,m,s);
     Protected *p=init_protected(str_to_key(k),m,str_to_signature(s));
@@ -181,6 +225,10 @@ void generate_random_data(int nv,int nc){
     for(int i=0;i<nv;i++){
         kptab[i]=(Key *)malloc(sizeof(Key));
         kstab[i]=(Key *)malloc(sizeof(Key));
+        if (kptab[i]==NULL || kstab[i]==NULL){
+        printf("ERREUR MALLOC\n");
+        exit(-1);
+    }
         init_pair_keys(kptab[i],kstab[i],3,7);
         str=key_to_str(kstab[i]);
         str2=key_to_str(kptab[i]);

@@ -10,8 +10,8 @@
 #include "math.h"
 
 
-void save_block(Block *b){
-    FILE *f=fopen("block.txt","w");
+void save_block(Block *b,char *filename){
+    FILE *f=fopen(filename,"w");
     CellProtected *cp=b->votes;
     char *kstr=key_to_str(b->author);
     char *pstr=NULL;
@@ -31,6 +31,10 @@ void save_block(Block *b){
 Block *read_block(char *filename){
     FILE *f=fopen(filename,"r");
     Block *b=(Block *)malloc(sizeof(Block));
+    if (b==NULL){
+        printf("ERREUR MALLOC\n");
+        exit(-1);
+    }
     char kstr[256];
     char pstr[512];
     b->votes=NULL;
@@ -50,6 +54,10 @@ Block *read_block(char *filename){
 char *block_to_str(Block *block){
     char *res=(char *)malloc(sizeof(char)*1024);
     char *ctmp=(char *)malloc(sizeof(char)*256);
+    if (res==NULL || ctmp==NULL){
+        printf("ERREUR MALLOC\n");
+        exit(-1);
+    }
     char *key=key_to_str(block->author);
     ctmp[0]='\0';
     char *cpstrtmp;
@@ -62,36 +70,46 @@ char *block_to_str(Block *block){
         tmp=tmp->next;
     }
     res=realloc(res,strlen(ctmp)+256*sizeof(char));
-    sprintf(res," %s %s %s %d\n",key,block->previous_hash,ctmp,block->nonce);
-    free(key);
-    free(ctmp);
-    return res;
-}
-/*Exactement pareil que block_to_str mais sans le nonce
--- Question d'optimisations pour compute_proof_of_work*/
-char *block_to_str_bis(Block *block){
-    char *res=(char *)malloc(sizeof(char)*1024);
-    char *ctmp=(char *)malloc(sizeof(char)*256);
-    char *key=key_to_str(block->author);
-    ctmp[0]='\0';
-    char *cpstrtmp;
-    CellProtected *tmp=block->votes;
-    while (tmp!=NULL){
-        cpstrtmp=protected_to_str(tmp->data);
-        ctmp=(char *)realloc(ctmp,strlen(ctmp)+128*sizeof(char));
-        strcat(ctmp,cpstrtmp);
-        free(cpstrtmp);
-        tmp=tmp->next;
-    }
-    res=realloc(res,strlen(ctmp)+256*sizeof(char));
-    sprintf(res," %s %s %s\n",key,block->previous_hash,ctmp);
+    sprintf(res," %s %s %s %d",key,block->previous_hash,ctmp,block->nonce);
     free(key);
     free(ctmp);
     return res;
 }
 
+/*Exactement pareil que block_to_str mais sans le nonce
+-- Question d'optimisations pour compute_proof_of_work*/
+char *block_to_str_bis(Block *block){
+    char *res=(char *)malloc(sizeof(char)*1024);
+    char *ctmp=(char *)malloc(sizeof(char)*256);
+    if (res==NULL || ctmp==NULL){
+        printf("ERREUR MALLOC\n");
+        exit(-1);
+    }
+    char *key=key_to_str(block->author);
+    ctmp[0]='\0';
+    char *cpstrtmp;
+    CellProtected *tmp=block->votes;
+    while (tmp!=NULL){
+        cpstrtmp=protected_to_str(tmp->data);
+        ctmp=(char *)realloc(ctmp,strlen(ctmp)+128*sizeof(char));
+        strcat(ctmp,cpstrtmp);
+        free(cpstrtmp);
+        tmp=tmp->next;
+    }
+    res=realloc(res,strlen(ctmp)+256*sizeof(char));
+    sprintf(res," %s %s %s",key,block->previous_hash,ctmp);
+    free(key);
+    free(ctmp);
+    return res;
+}
+/*Fonction de hachage avec protocole SHA256
+-- Retour : Chaîne de caractères et non valeurs hexadécimales*/
 unsigned char *func_sha(const char *str){
     unsigned char *res=(unsigned char *)malloc(sizeof(char)*256);
+    if (res==NULL){
+        printf("ERREUR MALLOC\n");
+        exit(-1);
+    }
     res[0]='\0';
     unsigned char *d=SHA256((unsigned char *)str,strlen(str),0);
     char c[256];
@@ -102,57 +120,85 @@ unsigned char *func_sha(const char *str){
     return res;
 }
 
-void affichage(unsigned char *hash,int j,char *message){
-    for(int i=0;i<SHA256_DIGEST_LENGTH;i++){
-        printf("%02x",hash[i]);
-    }
-    printf(" %d ---- %s\n",j,message);
-}
-
-
+/*Fonction de recherche d'une valeur hachée du bloc commençant avec d zéros
+-- Résultats appliqués à b->nonce et b->hash*/
 void compute_proof_of_work(Block *b,int d){
     unsigned char *hash;
     char zeros[d+1];
     memset(zeros,'0',d);
     zeros[d]='\0';
     char *block=block_to_str_bis(b);
-    char tohash[strlen(block)+sizeof(int)+1];
-    printf("%s\n",zeros);
+    char tohash[strlen(block)+sizeof(int)+2];
+    char *hashcomp;
     for(int i=0;i<INT32_MAX;i++){
-        b->nonce=i;
-        sprintf(tohash,"%s%d",block,i);
+        sprintf(tohash,"%s %d",block,i);
         hash=func_sha(tohash);
-        hash[d]='\0';
-        if (strcmp((const char *)hash,zeros)==0){
-            affichage(hash,i,"VALIDE !");
+        hashcomp=strdup((char *)hash);
+        hashcomp[d]='\0';
+        if (strcmp((const char *)hashcomp,zeros)==0){
+            printf("%s %d ---- VALIDE !\n",hash,i);
             b->hash=hash;
             b->nonce=i;
             free(block);
+            free(hashcomp);
             return;
         }
+        free(hashcomp);
         free(hash);
     }
     b->nonce=-1;
     printf("On a rien trouvé\n");
 }
 
+/*Fonction de vérification d'un bloc
+-- Vérifie que la valeur hachée du bloc commence par d nombre de zéros*/
 int verify_block(Block *b,int d){
-    char nonce[256];
     char zeros[d+1];
-    
+    char *blockstr=block_to_str(b);
     memset(zeros,'0',d);
     zeros[d]='\0';
-    sprintf(nonce,"%d",b->nonce);
-    unsigned char *hash=SHA256((const unsigned char *)nonce,strlen(nonce),0);
-
+    unsigned char *hash=func_sha(blockstr);
     if (strcmp((const char *)hash,zeros)==0){ // STRCMP RENVOIE 0 si les deux chaînes sont égales (0 étant le booléen pour false..)
         return 1;
+        free(blockstr);
     }
+    free(blockstr);
     return 0;
 }
 
+/*Fonction de création d'un bloc
+-- Informations obtenues à partir du fichier Pending_votes.txt
+-- Bloc sauvegardé dans le fichier Pending_block*/
+void create_block(CellTree *tree,Key *author,int d){
+    FILE *fr=fopen("Blockchain/Pending_votes.txt","r");
+    if (fr==NULL){
+        printf("ERREUR LECTURE DE FICHIER -- CREATE_BLOCK\n");
+        exit(-1);
+    }
+    Block *b=(Block *)malloc(sizeof(Block));
+    if (b==NULL){
+        printf("ERREUR ALLOCATION MALLOC -- CREATE_BLOCK\n");
+    }
 
+    CellProtected *plist=read_protected("Blockchain/Pending_votes.txt");
+    CellTree *lastnode=last_node(tree);
+    
+    b->author=author;
+    b->votes=plist;
+    b->previous_hash=lastnode->block->hash;
+    compute_proof_of_work(b,d);
+    CellTree *cell=create_node(b);
+    add_child(lastnode,cell);
+    save_block(b,"Blockchain/Pending_block");
+    fclose(fr);
+    remove("Blockchain/Pending_votes.txt");
+}
+
+/*Fonction de suppression d'un bloc*/
 void delete_block(Block *b){
+    if (b==NULL){
+        return;
+    }
     if (b->hash!=NULL){
         free(b->hash);
     }
@@ -169,9 +215,35 @@ void delete_block(Block *b){
     free(b);
 }
 
+void add_block(int d,char *name){
+    Block *b=read_block("Blockchain/Pending_votes.txt");
+    if (verify_block(b,d)){
+        FILE *f=fopen(name,"w");
+        if(f==NULL){
+            printf("ERREUR ECRITURE FICHIER -- ADD_BLOCK");
+        }
+        char *bstr=block_to_str(b);
+        fprintf(f,"%s\n",bstr);
+        free(bstr);
+        fclose(f);
+    }
+    remove("Blockchain/Pending_block");
+}
 
+// ---------------------------------------------------------------------
+// -------------------------- Arbres de blocs --------------------------
+// ---------------------------------------------------------------------
+
+
+
+
+/*Fonction de création d'un noeud*/
 CellTree *create_node(Block *b){
     CellTree *cell=(CellTree *)malloc(sizeof(CellTree));
+    if (cell==NULL){
+        printf("ERREUR MALLOC\n");
+        exit(-1);
+    }
     cell->block=b;
     cell->father=NULL;
     cell->firstChild=NULL;
@@ -181,6 +253,7 @@ CellTree *create_node(Block *b){
     return cell;
 }
 
+/*Fonction de mise à jour de la hauteur du noeud father*/
 int update_height(CellTree *father,CellTree *child){
     int maximum=fmax(father->height,child->height+1);
     if (maximum==father->height){
@@ -190,7 +263,12 @@ int update_height(CellTree *father,CellTree *child){
     return 1;
 }
 
+/*Fonction d'ajout en tête d'un noeud fils child au noeud père father*/
 void add_child(CellTree *father,CellTree *child){
+    if (father==NULL){
+        father=child;
+        return;
+    }
     // Ajout en tête du fils
     child->nextBro=father->firstChild;
     father->firstChild=child;
@@ -221,13 +299,22 @@ void print_tree(CellTree *racine,int prof){
     }
 }
 
-
+/*Fonction de suppression d'un noeud*/
 void delete_node(CellTree *node){
-    delete_block(node->block);
+    if (node==NULL){
+        return;
+    }
+    if (node->block!=NULL){
+        delete_block(node->block);
+    }
     free(node);
 }
 
+/*Fonction de suppression d'un arbre*/
 void delete_tree(CellTree *tree){
+    if (tree==NULL){
+        return;
+    }
     CellTree *child=tree->firstChild;
     CellTree *tmp;
     while (child!=NULL){
@@ -235,9 +322,10 @@ void delete_tree(CellTree *tree){
         delete_tree(child);
         child=tmp;
     }
-    delete_node(child);
+    delete_node(tree);
 }
 
+/*Fonction de recherche de l'enfant possèdant la hauteur la plus élevée*/
 CellTree *highest_child(CellTree *cell){
     if (cell->firstChild==NULL){
         return NULL;
@@ -253,6 +341,7 @@ CellTree *highest_child(CellTree *cell){
     return max;
 }
 
+/*Fonction de recherche du noeud ayant le parcours le plus long*/
 CellTree *last_node(CellTree *tree){
     if (tree->firstChild==NULL){
         return tree;
@@ -260,18 +349,7 @@ CellTree *last_node(CellTree *tree){
     return last_node(highest_child(tree));
 }
 
-/*Fonction de fusion de deux listes chaînées de CellProtected*/
-void fusion_cell_protected(CellProtected *first, CellProtected *second){
-    if (first==NULL){
-        first=second;
-        return;
-    }
-    CellProtected *tmp=first;
-    while(tmp->next!=NULL){
-        tmp=tmp->next;
-    }
-    tmp->next=second;
-}
+
 
 /*Fonction de fusion des listes de déclaration contenues dans la plus longue chaîne d'éléments
 -- Amélioration dans le parcours résultat 
