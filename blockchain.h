@@ -26,6 +26,7 @@ void compute_proof_of_work(Block *b,int d);
 int verify_block(Block *b,int d);
 void delete_block(Block *b);
 void create_block(CellTree *tree,Key *author,int d);
+void add_block(int d,char *name);
 
 CellTree *create_node(Block *b);
 int update_height(CellTree *father,CellTree *child);

@@ -9,7 +9,7 @@
 #include "secure.h"
 #include <time.h>
 #include <stdlib.h>
-
+#include "simulation.h"
 
 
 
@@ -18,17 +18,12 @@ int main(){
     // Essai SHA256
     const char *s="Rosetta code";
     unsigned char *d=SHA256((const unsigned char*)s,strlen(s),0);
-    unsigned char *d1=SHA256((const unsigned char*)s,strlen(s),0);
     for(int i=0;i<SHA256_DIGEST_LENGTH;i++){
         printf("%02x",d[i]);
     }
     putchar('\n');
-    for(int i=0;i<SHA256_DIGEST_LENGTH;i++){
-        printf("%02x",d1[i]);
-    }
-    putchar('\n');
     Block *b=(Block *)malloc(sizeof(Block));
-    generate_random_data(25,10);
+    generate_random_data(10,1);
     b->author=(Key *)malloc(sizeof(Key));
     init_key(b->author,558,133);
     b->votes=valid_list_protected(read_protected("declarations.txt"));
@@ -44,20 +39,37 @@ int main(){
     b->nonce=550;
     free(b->hash);
     clock_t begin=clock();
-    compute_proof_of_work(b,5);
+    compute_proof_of_work(b,3);
     clock_t end=clock();
     printf( "Finished in %.3f sec\n",(double)(end -  begin)/ CLOCKS_PER_SEC);
-    printf("Verify Block : %d\n",verify_block(b,5));
+    printf("Verify Block : %d\n",verify_block(b,3));
     CellProtected *l1=valid_list_protected(read_protected("declarations.txt"));
     // generate_random_data(15,2);
     CellProtected *l2=valid_list_protected(read_protected("declarations.txt"));
     fusion_cell_protected(l1,l2);
     //print_list_protected(l1);
+
+
+    CellTree *tree=create_node(b);
+
+    Key *key=(Key *)malloc(sizeof(Key));
+    init_key(key,551,220);
+    CellProtected *cp=valid_list_protected(read_protected("declarations.txt"));
+    CellProtected *headcp=cp;
+    while (cp!=NULL){
+        submit_vote(cp->data);
+        cp=cp->next;
+    }
     
-    delete_list_protected(l1);
+    create_block(tree,key,3);
+    add_block(3,"Blockchain/block1.txt");
+    print_tree(tree,0);
+
+    delete_list_protected(headcp);
+    free(key);
     free(b->author);
-    delete_block(b);
-
-
+    delete_tree(tree);
+    delete_list_protected(l1);
+    
 }
 

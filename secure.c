@@ -189,9 +189,9 @@ Protected *str_to_protected(char *str){
         exit(-1);
     }
     char s[256];
+    s[0]='\0';
     sscanf(str,"%s %s %s",k,m,s);
     Protected *p=init_protected(str_to_key(k),m,str_to_signature(s));
-    free(str);
     return p;
 }
 

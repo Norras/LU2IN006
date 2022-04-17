@@ -16,7 +16,7 @@ void save_block(Block *b,char *filename){
     char *kstr=key_to_str(b->author);
     char *pstr=NULL;
 
-    fprintf(f,"%s %s %s %d\n",kstr,b->hash,b->previous_hash,b->nonce);
+    fprintf(f,"%s %s %s %d\n",kstr,b->previous_hash,b->hash,b->nonce);
     free(kstr);
 
     while (cp!=NULL){
@@ -30,7 +30,13 @@ void save_block(Block *b,char *filename){
 
 Block *read_block(char *filename){
     FILE *f=fopen(filename,"r");
+    if (f==NULL){
+        printf("ERREUR OUVERTURE FICHIER -- READ_BLOCK\n");
+        exit(-1);
+    }
     Block *b=(Block *)malloc(sizeof(Block));
+    b->hash=(unsigned char *)malloc(sizeof(unsigned char)*256);
+    b->previous_hash=(unsigned char *)malloc(sizeof(unsigned char)*256);
     if (b==NULL){
         printf("ERREUR MALLOC\n");
         exit(-1);
@@ -40,12 +46,12 @@ Block *read_block(char *filename){
     b->votes=NULL;
     char buffer[512];
     fgets(buffer,512,f);
-    sscanf(buffer,"%s %s %s %d",kstr,b->hash,b->previous_hash,&(b->nonce));
+    sscanf(buffer,"%s %s %s %d",kstr,b->previous_hash,b->hash,&(b->nonce));
     b->author=str_to_key(kstr);
 
     while (fgets(buffer,512,f)!=NULL){
-        sscanf(buffer,"%s",pstr);
-        b->votes=add_head_cellprotected(b->votes,str_to_protected(pstr));
+        sscanf(buffer,"%s\n",pstr);
+        add_tail_cellprotected(&(b->votes),str_to_protected(buffer));
     }
     fclose(f);
     return b;
@@ -64,13 +70,14 @@ char *block_to_str(Block *block){
     CellProtected *tmp=block->votes;
     while (tmp!=NULL){
         cpstrtmp=protected_to_str(tmp->data);
+        strcat(cpstrtmp,"\n");
         ctmp=(char *)realloc(ctmp,strlen(ctmp)+128*sizeof(char));
         strcat(ctmp,cpstrtmp);
         free(cpstrtmp);
         tmp=tmp->next;
     }
     res=realloc(res,strlen(ctmp)+256*sizeof(char));
-    sprintf(res," %s %s %s %d",key,block->previous_hash,ctmp,block->nonce);
+    sprintf(res,"%s %s %d\n%s",key,block->previous_hash,block->nonce,ctmp);
     free(key);
     free(ctmp);
     return res;
@@ -91,13 +98,14 @@ char *block_to_str_bis(Block *block){
     CellProtected *tmp=block->votes;
     while (tmp!=NULL){
         cpstrtmp=protected_to_str(tmp->data);
+        strcat(cpstrtmp,"\n");
         ctmp=(char *)realloc(ctmp,strlen(ctmp)+128*sizeof(char));
         strcat(ctmp,cpstrtmp);
         free(cpstrtmp);
         tmp=tmp->next;
     }
     res=realloc(res,strlen(ctmp)+256*sizeof(char));
-    sprintf(res," %s %s %s",key,block->previous_hash,ctmp);
+    sprintf(res,"%s %s\n%s",key,block->previous_hash,ctmp);
     free(key);
     free(ctmp);
     return res;
@@ -110,13 +118,9 @@ unsigned char *func_sha(const char *str){
         printf("ERREUR MALLOC\n");
         exit(-1);
     }
-    res[0]='\0';
     unsigned char *d=SHA256((unsigned char *)str,strlen(str),0);
-    char c[256];
-    for(int i=0;i<SHA256_DIGEST_LENGTH;i++){
-        sprintf(c,"%02x",d[i]);
-        strcat((char *)res,c);
-    }
+    // J'évite les boucles for ici pour ne avoir à appeler qu'une seule fois sprintf au lieu d'appeler 32 fois sprintf et strcat
+    sprintf((char *)res,"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",d[0],d[1],d[2],d[3],d[4],d[5],d[6],d[7],d[8],d[9],d[10],d[11],d[12],d[13],d[14],d[15],d[16],d[17],d[18],d[19],d[20],d[21],d[22],d[23],d[24],d[25],d[26],d[27],d[28],d[29],d[30],d[31]);
     return res;
 }
 
@@ -127,23 +131,23 @@ void compute_proof_of_work(Block *b,int d){
     char zeros[d+1];
     memset(zeros,'0',d);
     zeros[d]='\0';
-    char *block=block_to_str_bis(b);
-    char tohash[strlen(block)+sizeof(int)+2];
+    char *tohash;
     char *hashcomp;
     for(int i=0;i<INT32_MAX;i++){
-        sprintf(tohash,"%s %d",block,i);
+        b->nonce=i;
+        tohash=block_to_str(b);
         hash=func_sha(tohash);
         hashcomp=strdup((char *)hash);
         hashcomp[d]='\0';
         if (strcmp((const char *)hashcomp,zeros)==0){
             printf("%s %d ---- VALIDE !\n",hash,i);
             b->hash=hash;
-            b->nonce=i;
-            free(block);
+            free(tohash);
             free(hashcomp);
             return;
         }
         free(hashcomp);
+        free(tohash);
         free(hash);
     }
     b->nonce=-1;
@@ -158,10 +162,14 @@ int verify_block(Block *b,int d){
     memset(zeros,'0',d);
     zeros[d]='\0';
     unsigned char *hash=func_sha(blockstr);
+    hash[d]='\0';
     if (strcmp((const char *)hash,zeros)==0){ // STRCMP RENVOIE 0 si les deux chaînes sont égales (0 étant le booléen pour false..)
-        return 1;
         free(blockstr);
+        free(hash);
+        return 1;
+        
     }
+    free(hash);
     free(blockstr);
     return 0;
 }
@@ -170,27 +178,22 @@ int verify_block(Block *b,int d){
 -- Informations obtenues à partir du fichier Pending_votes.txt
 -- Bloc sauvegardé dans le fichier Pending_block*/
 void create_block(CellTree *tree,Key *author,int d){
-    FILE *fr=fopen("Blockchain/Pending_votes.txt","r");
-    if (fr==NULL){
-        printf("ERREUR LECTURE DE FICHIER -- CREATE_BLOCK\n");
-        exit(-1);
-    }
     Block *b=(Block *)malloc(sizeof(Block));
     if (b==NULL){
         printf("ERREUR ALLOCATION MALLOC -- CREATE_BLOCK\n");
+        exit(-1);
     }
 
-    CellProtected *plist=read_protected("Blockchain/Pending_votes.txt");
+    CellProtected *plist=read_protected("Blockchain/Pending_votes.txt"); 
     CellTree *lastnode=last_node(tree);
     
     b->author=author;
     b->votes=plist;
-    b->previous_hash=lastnode->block->hash;
+    b->previous_hash=(unsigned char *)strdup((char *)lastnode->block->hash);
     compute_proof_of_work(b,d);
     CellTree *cell=create_node(b);
     add_child(lastnode,cell);
     save_block(b,"Blockchain/Pending_block");
-    fclose(fr);
     remove("Blockchain/Pending_votes.txt");
 }
 
@@ -216,8 +219,8 @@ void delete_block(Block *b){
 }
 
 void add_block(int d,char *name){
-    Block *b=read_block("Blockchain/Pending_votes.txt");
-    if (verify_block(b,d)){
+    Block *b=read_block("Blockchain/Pending_block");
+    if (verify_block(b,d)==1){
         FILE *f=fopen(name,"w");
         if(f==NULL){
             printf("ERREUR ECRITURE FICHIER -- ADD_BLOCK");
@@ -227,6 +230,11 @@ void add_block(int d,char *name){
         free(bstr);
         fclose(f);
     }
+
+    delete_list_protected(b->votes);
+    b->votes=NULL;
+    free(b->author);
+    delete_block(b);
     remove("Blockchain/Pending_block");
 }
 
@@ -292,6 +300,7 @@ void print_tree(CellTree *racine,int prof){
     char tabs[racine->height];
     CellTree *cour=racine;
     memset(tabs,'\t',prof);
+    tabs[prof]='\0';
     while (cour!=NULL){
         printf("%sHauteur:%d Hash:%s\n",tabs,cour->height,cour->block->hash);
         print_tree(cour->firstChild,++prof);
