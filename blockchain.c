@@ -296,7 +296,7 @@ void print_tree(CellTree *racine,int prof){
     tabs[prof]='\0';
     while (cour!=NULL){
         printf("%sHauteur:%d Hash:%s\n",tabs,cour->height,cour->block->hash);
-        print_tree(cour->firstChild,++prof);
+        print_tree(cour->firstChild,prof+1);
         cour=cour->nextBro;
     }
 }

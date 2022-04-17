@@ -62,6 +62,10 @@ int main(){
     
     create_block(tree,key,3);
     add_block(3,"Blockchain/block1.txt");
+    tree->nextBro=create_node(b);
+    add_child(tree->nextBro,create_node(b));
+    tree->nextBro->nextBro=create_node(b);
+    add_child(tree->nextBro->nextBro,create_node(b));
     print_tree(tree,0);
 
     delete_list_protected(headcp);
