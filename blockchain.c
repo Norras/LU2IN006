@@ -221,14 +221,7 @@ void delete_block(Block *b){
 void add_block(int d,char *name){
     Block *b=read_block("Blockchain/Pending_block");
     if (verify_block(b,d)==1){
-        FILE *f=fopen(name,"w");
-        if(f==NULL){
-            printf("ERREUR ECRITURE FICHIER -- ADD_BLOCK");
-        }
-        char *bstr=block_to_str(b);
-        fprintf(f,"%s\n",bstr);
-        free(bstr);
-        fclose(f);
+        save_block(b,name);
     }
 
     delete_list_protected(b->votes);
@@ -381,3 +374,4 @@ CellProtected *fusion_highest_CP(CellTree *racine){
     }
     return res;
 }
+

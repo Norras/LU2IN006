@@ -10,8 +10,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include "simulation.h"
-
-
+#include <dirent.h>
 
 int main(){
     srand(time(NULL));
@@ -71,5 +70,16 @@ int main(){
     delete_tree(tree);
     delete_list_protected(l1);
     
+    DIR *rep=opendir("./Blockchain/");
+    if (rep !=NULL){
+        struct dirent *dir;
+        while ((dir=readdir(rep))){
+            if (strcmp(dir->d_name,".")!=0 && strcmp(dir->d_name,"..")!=0){
+                printf("Chemin du fichier : ./Blockchain/%s \n",dir->d_name);
+            }
+        }
+        closedir(rep);
+    }
+
 }
 
