@@ -61,7 +61,7 @@ int main(){
     }
     
     create_block(tree,key,3);
-    add_block(3,"Blockchain/block1.txt");
+    add_block(3,"Blockchain/block21.txt");
     tree->nextBro=create_node(b);
     add_child(tree->nextBro,create_node(b));
     tree->nextBro->nextBro=create_node(b);

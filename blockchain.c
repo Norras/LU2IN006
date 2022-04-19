@@ -77,7 +77,7 @@ char *block_to_str(Block *block){
         tmp=tmp->next;
     }
     res=realloc(res,strlen(ctmp)+256*sizeof(char));
-    sprintf(res,"%s %s %d\n%s",key,block->previous_hash,block->nonce,ctmp);
+    sprintf(res,"%s %s\n%s%d",key,block->previous_hash,ctmp,block->nonce);
     free(key);
     free(ctmp);
     return res;
@@ -131,28 +131,31 @@ void compute_proof_of_work(Block *b,int d){
     char zeros[d+1];
     memset(zeros,'0',d);
     zeros[d]='\0';
-    char *tohash;
+    char *block=block_to_str_bis(b);
+    printf("%s\n",zeros);
+    char tohash[strlen(block)+sizeof(int)+2];
     char *hashcomp;
     for(int i=0;i<INT32_MAX;i++){
         b->nonce=i;
-        tohash=block_to_str(b);
+        sprintf(tohash,"%s%d",block,i);
         hash=func_sha(tohash);
         hashcomp=strdup((char *)hash);
         hashcomp[d]='\0';
         if (strcmp((const char *)hashcomp,zeros)==0){
             printf("%s %d ---- VALIDE !\n",hash,i);
             b->hash=hash;
-            free(tohash);
+            b->nonce=i;
+            free(block);
             free(hashcomp);
             return;
         }
         free(hashcomp);
-        free(tohash);
         free(hash);
     }
     b->nonce=-1;
     printf("On a rien trouvé\n");
 }
+
 
 /*Fonction de vérification d'un bloc
 -- Vérifie que la valeur hachée du bloc commence par d nombre de zéros*/
@@ -322,9 +325,9 @@ void delete_tree(CellTree *tree){
     while (child!=NULL){
         tmp=child->nextBro;
         delete_tree(child);
+        delete_node(child);
         child=tmp;
     }
-    delete_node(tree);
 }
 
 /*Fonction de recherche de l'enfant possèdant la hauteur la plus élevée*/
