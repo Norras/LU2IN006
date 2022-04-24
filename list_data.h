@@ -28,7 +28,7 @@ void print_list_protected(CellProtected *LCP);
 void print_list_keys(CellKey *LCK);
 CellProtected *valid_list_protected(CellProtected *list);
 char *CPlist_to_str(CellProtected *list);
-void fusion_cell_protected(CellProtected *first, CellProtected *second);
+void fusion_cell_protected(CellProtected **first, CellProtected *second);
 
 
 #endif

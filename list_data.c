@@ -150,7 +150,7 @@ CellProtected *read_protected(char *filename){
         pKey=str_to_key(keystring);
         sgn=str_to_signature(crypted);
         p=init_protected(pKey,strdup(mess),sgn);
-        add_tail_cellprotected(&list,p);
+        list=add_head_cellprotected(list,p);
     }
     fclose(f);
     return list;
@@ -177,9 +177,9 @@ void delete_list_protected(CellProtected *list){
 
 /* Fonction retirant toutes les déclarations non valides (Fausses signatures)*/
 CellProtected *valid_list_protected(CellProtected *list){
-    CellProtected *prec;
-    CellProtected *cour;
-    CellProtected *tmp;
+    CellProtected *prec=NULL;
+    CellProtected *cour=NULL;
+    CellProtected *tmp=NULL;
     if (verify(list->data)!=0){
         tmp=list;
         list=list->next;
@@ -203,12 +203,12 @@ CellProtected *valid_list_protected(CellProtected *list){
 }
 
 /*Fonction de fusion de deux listes chaînées de CellProtected*/
-void fusion_cell_protected(CellProtected *first, CellProtected *second){
-    if (first==NULL){
-        first=second;
+void fusion_cell_protected(CellProtected **first, CellProtected *second){
+    if (*first==NULL){
+        *first=second;
         return;
     }
-    CellProtected *tmp=first;
+    CellProtected *tmp=*first;
     while(tmp->next!=NULL){
         tmp=tmp->next;
     }

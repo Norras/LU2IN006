@@ -1,4 +1,4 @@
-all: main main2 mainbc winner
+all: main main2 mainbc fmain
 
 
 main: main.c prime.c protocol.c
@@ -10,11 +10,14 @@ main2: main2.c prime.c protocol.c secure.c
 # list_data: list_data.c prime.c protocol.c secure.c
 # 	gcc -Wall -o list_data list_data.c prime.c protocol.c secure.c -lm -g
 
-mainbc: mainbc.c blockchain.c list_data.c prime.c protocol.c secure.c simulation.c
-	gcc -Wall -o mainbc mainbc.c blockchain.c list_data.c prime.c protocol.c secure.c simulation.c -lm -lssl -lcrypto -g
+mainbc: mainbc.c blockchain.c list_data.c prime.c protocol.c secure.c winner.c
+	gcc -Wall -o mainbc mainbc.c blockchain.c list_data.c prime.c protocol.c secure.c winner.c -lm -lssl -lcrypto -g
 
-winner: winner.c list_data.c prime.c protocol.c secure.c
-	gcc -Wall -o winner winner.c list_data.c prime.c protocol.c secure.c -lm -g
+# winner: winner.c list_data.c prime.c protocol.c secure.c
+# 	gcc -Wall -o winner winner.c list_data.c prime.c protocol.c secure.c -lm -g
+
+fmain: fmain.c blockchain.c list_data.c prime.c protocol.c secure.c winner.c
+	gcc -Wall -o $@ $^ -lm -lssl -lcrypto -g
 clear:
 	rm -rf *.exe
 	rm -rf main

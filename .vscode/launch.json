@@ -8,7 +8,7 @@
             "name": "(gdb) Lancer",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/mainbc",
+            "program": "${workspaceFolder}/fmain",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",

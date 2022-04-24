@@ -8,8 +8,19 @@
 #include <openssl/sha.h>
 #include "secure.h"
 #include "math.h"
+#include <dirent.h> 
+#include "winner.h"
 
-
+/*Fonction de sauvegarde d'un bloc dans un fichier <filename>
+Structure du fichier:
+|AUTHOR| |PREVIOUS HASH| |HASH| |NONCE|
+|CELLPROTECTED|
+|CELLPROTECTED|
+|CELLPROTECTED|
+.
+.
+.
+*/
 void save_block(Block *b,char *filename){
     FILE *f=fopen(filename,"w");
     CellProtected *cp=b->votes;
@@ -28,6 +39,16 @@ void save_block(Block *b,char *filename){
     fclose(f);
 }
 
+/*Fonction de lecture d'un block enregistré dans un fichier
+Structure du fichier demandé:
+|AUTHOR| |PREVIOUS HASH| |HASH| |NONCE|
+|CELLPROTECTED|
+|CELLPROTECTED|
+|CELLPROTECTED|
+.
+.
+.
+*/
 Block *read_block(char *filename){
     FILE *f=fopen(filename,"r");
     if (f==NULL){
@@ -48,11 +69,20 @@ Block *read_block(char *filename){
     fgets(buffer,512,f);
     sscanf(buffer,"%s %s %s %d",kstr,b->previous_hash,b->hash,&(b->nonce));
     b->author=str_to_key(kstr);
-
-    while (fgets(buffer,512,f)!=NULL){
+    // On a besoin d'éviter l'inversion des ajouts en tête
+    // Donc on n'utilise pas add_head_cellprotected
+    if (fgets(buffer,512,f)!=NULL){ // Premier élément 
         sscanf(buffer,"%s\n",pstr);
-        add_tail_cellprotected(&(b->votes),str_to_protected(buffer));
+        b->votes=create_cell_protected(str_to_protected(buffer));
+        CellProtected *lastelement=b->votes;
+        while (fgets(buffer,512,f)!=NULL){ // Elements suivants
+            sscanf(buffer,"%s\n",pstr);
+            lastelement->next=create_cell_protected(str_to_protected(buffer));
+            lastelement=lastelement->next;
+        }
     }
+
+
     fclose(f);
     return b;
 }
@@ -132,7 +162,6 @@ void compute_proof_of_work(Block *b,int d){
     memset(zeros,'0',d);
     zeros[d]='\0';
     char *block=block_to_str_bis(b);
-    printf("%s\n",zeros);
     char tohash[strlen(block)+sizeof(int)+2];
     char *hashcomp;
     for(int i=0;i<INT32_MAX;i++){
@@ -180,19 +209,26 @@ int verify_block(Block *b,int d){
 /*Fonction de création d'un bloc
 -- Informations obtenues à partir du fichier Pending_votes.txt
 -- Bloc sauvegardé dans le fichier Pending_block*/
-void create_block(CellTree *tree,Key *author,int d){
+void create_block(CellTree **tree,Key *author,int d){
     Block *b=(Block *)malloc(sizeof(Block));
+
     if (b==NULL){
         printf("ERREUR ALLOCATION MALLOC -- CREATE_BLOCK\n");
         exit(-1);
     }
 
     CellProtected *plist=read_protected("Blockchain/Pending_votes.txt"); 
-    CellTree *lastnode=last_node(tree);
+    CellTree *lastnode=last_node(*tree);
     
     b->author=author;
     b->votes=plist;
-    b->previous_hash=(unsigned char *)strdup((char *)lastnode->block->hash);
+    if (lastnode==NULL){
+        b->previous_hash=NULL;
+        *tree=create_node(b);
+    } else {
+        b->previous_hash=(unsigned char *)strdup((char *)lastnode->block->hash);
+    }
+    
     compute_proof_of_work(b,d);
     CellTree *cell=create_node(b);
     add_child(lastnode,cell);
@@ -202,6 +238,7 @@ void create_block(CellTree *tree,Key *author,int d){
 
 /*Fonction de suppression d'un bloc*/
 void delete_block(Block *b){
+
     if (b==NULL){
         return;
     }
@@ -232,6 +269,19 @@ void add_block(int d,char *name){
     free(b->author);
     delete_block(b);
     remove("Blockchain/Pending_block");
+}
+
+
+void submit_vote(Protected *p){
+    FILE *f=fopen("Blockchain/Pending_votes.txt","a");
+    if (f==NULL){
+        printf("ERREUR ECRITURE DE FICHIER -- SUBMIT_VOTES\n");
+        exit(-1);
+    }
+    char *pstr=protected_to_str(p);
+    fprintf(f,"%s\n",pstr);
+    free(pstr);
+    fclose(f);
 }
 
 // ---------------------------------------------------------------------
@@ -274,16 +324,26 @@ void add_child(CellTree *father,CellTree *child){
         return;
     }
     // Ajout en tête du fils
-    child->nextBro=father->firstChild;
-    father->firstChild=child;
+    if (father->firstChild==NULL){
+        father->firstChild=child;
+    } else {
+        CellTree *tmp = father->firstChild;
+        // Looking for the first child having no brother
+        while (tmp->nextBro != NULL) {
+          tmp = tmp->nextBro;
+        }
+
+        tmp->nextBro = child;
+    }
+    child->father=father;
 
     // Modification de la hauteur des parents
     CellTree *ftmp=father;
     CellTree *ctmp=father->firstChild;
     while (ftmp!=NULL){
         update_height(ftmp,ctmp);
+        ctmp=ftmp;
         ftmp=ftmp->father;
-        ctmp=ctmp->father;
     }
 }
 
@@ -293,15 +353,14 @@ void print_tree(CellTree *racine,int prof){
     if (racine==NULL){
         return;
     }
-    char tabs[racine->height];
+    char tabs[prof+1];
     CellTree *cour=racine;
-    memset(tabs,'\t',prof);
+    memset(tabs,' ',prof);
     tabs[prof]='\0';
-    while (cour!=NULL){
-        printf("%sHauteur:%d Hash:%s\n",tabs,cour->height,cour->block->hash);
-        print_tree(cour->firstChild,prof+1);
-        cour=cour->nextBro;
-    }
+
+    printf("%sHauteur:%d Hash:%s\n",tabs,cour->height,cour->block->hash);
+    print_tree(cour->firstChild,prof+1);
+    print_tree(cour->nextBro,prof);
 }
 
 /*Fonction de suppression d'un noeud*/
@@ -320,14 +379,11 @@ void delete_tree(CellTree *tree){
     if (tree==NULL){
         return;
     }
-    CellTree *child=tree->firstChild;
-    CellTree *tmp;
-    while (child!=NULL){
-        tmp=child->nextBro;
-        delete_tree(child);
-        delete_node(child);
-        child=tmp;
-    }
+
+    delete_tree(tree->firstChild);
+    delete_tree(tree->nextBro);
+    delete_node(tree);
+
 }
 
 /*Fonction de recherche de l'enfant possèdant la hauteur la plus élevée*/
@@ -348,12 +404,14 @@ CellTree *highest_child(CellTree *cell){
 
 /*Fonction de recherche du noeud ayant le parcours le plus long*/
 CellTree *last_node(CellTree *tree){
+    if (tree==NULL){
+        return NULL;
+    }
     if (tree->firstChild==NULL){
         return tree;
     }
     return last_node(highest_child(tree));
 }
-
 
 
 /*Fonction de fusion des listes de déclaration contenues dans la plus longue chaîne d'éléments
@@ -369,7 +427,7 @@ CellProtected *fusion_highest_CP(CellTree *racine){
 
 
     while (cour!=NULL){
-        fusion_cell_protected(tmp,cour->block->votes);
+        fusion_cell_protected(&tmp,cour->block->votes);
         cour=highest_child(racine);
         while ((tmp!=NULL) && (tmp->next!=NULL)){
             tmp=tmp->next;
@@ -378,3 +436,63 @@ CellProtected *fusion_highest_CP(CellTree *racine){
     return res;
 }
 
+CellTree *read_tree(){
+    // Recherche du nombre de fichiers dans le dossier Blockchain
+    // Possible de faire un seul parcours du dossier et avoir un tableau à taille variable (realloc)
+    int c=0;
+    DIR *repc=opendir("./Blockchain/");
+    if (repc !=NULL){
+        struct dirent *dir;
+        while ((dir=readdir(repc))){
+            if (strcmp(dir->d_name,".")!=0 && strcmp(dir->d_name,"..")!=0){
+                c++;
+            }
+        }
+        closedir(repc);
+    }
+
+    CellTree *tab[c];
+    CellTree *racine=NULL;
+    int maxi=0;
+    DIR *rep=opendir("./Blockchain/");
+    char filename[1080]; // Implique une taille maximale de nom de fichier
+    if (rep!=NULL){
+        struct dirent *dir;
+        while ((dir=readdir(rep))){
+            if (strcmp(dir->d_name,".")!=0 && strcmp(dir->d_name,"..")!=0){
+                sprintf(filename,"Blockchain/%s",dir->d_name);
+                tab[maxi]=create_node(read_block(filename));
+                maxi++;
+            }
+        }
+        closedir(rep);
+    }
+    
+    for(int i=0;i<maxi;i++){
+        for(int j=0;j<maxi;j++){
+            if (j==i){
+                continue;
+            }
+            if (strcmp((char *)tab[j]->block->previous_hash,(char *)tab[i]->block->hash)==0){
+                add_child(tab[i],tab[j]);
+            }
+        }
+    }
+    for(int k=0;k<maxi;k++){
+        if (tab[k]->father==NULL){
+            racine=tab[k];
+        }
+    }
+    return racine;
+} 
+
+Key *compute_winner_BT(CellTree *tree,CellKey *candidates,CellKey *voters,int sizeC,int sizeV){
+    CellTree *tmp=tree;
+    CellProtected *list=NULL;
+    while (tmp!=NULL){      
+        fusion_cell_protected(&list,tmp->block->votes);
+        tmp=highest_child(tmp);
+    }
+    CellProtected *vlist=valid_list_protected(list);
+    return compute_winner(vlist,candidates,voters,sizeC,sizeV);
+}
