@@ -97,6 +97,7 @@ int occurence_key(Key *key,CellKey *list){
     }
     return 0;
 }
+
 /*Fonction déterminant le gagnant des élections
 -- Renvoie la clé avec le plus d'occurence dans la liste declarations
 -- Vérifie si les clés dans les déclarations est stockée dans la liste candidates
@@ -148,24 +149,3 @@ Key *compute_winner(CellProtected *decl,CellKey *candidates,CellKey *voters,int 
 }
 
 
-// int main(){
-
-//     CellKey *voters=read_public_keys("keys.txt");
-//     CellKey *candidates=read_public_keys("candidates.txt");
-//     HashCell *cell=create_hashcell(voters->data);
-//     int sizeV=50;
-//     int sizeC=20;
-//     CellProtected *decl=valid_list_protected(read_protected("declarations.txt"));
-//     Key *winner=compute_winner(decl,candidates,voters,sizeC,sizeV);
-//     char *winnerstr=key_to_str(winner);
-//     printf("Winner : %s\n",winnerstr);
-
-//     // Libération des éléments créé
-//     delete_list_protected(decl);
-//     delete_list_keys(voters);
-//     delete_list_keys(candidates);
-//     free(cell);
-//     free(winner);
-//     free(winnerstr);
-//     return 0;
-// }

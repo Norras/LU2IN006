@@ -58,19 +58,7 @@ CellProtected *add_head_cellprotected(CellProtected *list,Protected *cpr){
     cell->next=list;
     return cell;
 }
-/*Fonction d'ajout en queue d'une déclaration (Protected) dans une liste de déclarations (CellProtected)*/
-void add_tail_cellprotected(CellProtected **list,Protected *cpr){
-    CellProtected *cell=create_cell_protected(cpr);
-    if (*list==NULL){
-        *list=cell;
-        return;
-    }
-    CellProtected *tmp=*list;
-    while (tmp->next!=NULL){
-        tmp=tmp->next;
-    }
-    tmp->next=cell;
-}
+
 /*Fonction de lecture de clés publiques
 -- Les clés doivent être écrits tels que (%lx,%lx)
 -- Une clé/paire de clés par ligne*/
@@ -214,36 +202,3 @@ void fusion_cell_protected(CellProtected **first, CellProtected *second){
     }
     tmp->next=second;
 }
-// char *CPlist_to_str(CellProtected *list){
-//     CellProtected *tmp=list;
-//     char *res=(char *)malloc(256*sizeof(char));
-//     res=NULL;
-//     char *ptmp;
-//     int taille=256*sizeof(char);
-//     while(tmp!=NULL){
-//         ptmp=protected_to_str(tmp->data);
-//         taille=(strlen(ptmp)+2)*sizeof(char);
-//         printf("AAA%s\n",res);
-//         res=realloc(res,taille);
-        
-//         strcat(res,ptmp);
-//         tmp=tmp->next;
-//         free(ptmp);
-//     }
-//     return res;
-// }
-/*Main provisoire pour tester le fonctionnement des fonctions ci-dessus et analyse des fuites mémoires*/
-// int main(){
-
-//     CellKey *list=read_public_keys("keys.txt");
-//     //CellProtected *list=read_protected();
-
-//     // printf("\n%s\n",protected_to_str(list->next->next->data));
-//     //printf("%s\n",decrypt(plist->data->sgn->tab,plist->data->sgn->n,2633,2867));
-//     // list=valid_list_protected(list);
-//     //print_list_protected(list);
-//     //delete_list_protected(list);
-    
-//     print_list_keys(list);
-//     delete_list_keys(list);
-// }

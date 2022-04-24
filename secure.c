@@ -13,7 +13,7 @@ void init_key(Key *key,long val,long n){
     key->n=n;
 }
 
-/* Fonction de création de clés publiques/privées
+/* Fonction d'initialisation de clés publiques/privées
 -- pKey et sKey doivent être instanciés en amont */
 void init_pair_keys(Key *pKey,Key *sKey,long low_size,long up_size){
     long n=0,s=0,u=0;
@@ -126,7 +126,7 @@ Signature *str_to_signature(char *str){
     content=realloc(content,num*sizeof(long));
     return init_signature(content,num);
 }
-/*Fonction d'initialisation d'une structure Protected (Déclaration signée)*/
+/*Fonction d'initialisation d'un élément Protected (Déclaration signée)*/
 Protected* init_protected(Key* pKey, char* mess, Signature* sgn){
     Protected *res=(Protected *)malloc(sizeof(Protected));
     if (res==NULL){
@@ -153,7 +153,7 @@ void free_protected(Protected *p){
     free(p);
 }
 
-/*Fonction de vérification du message crypté avec la clé publique*/
+/*Fonction de vérification du message chiffré avec la clé publique*/
 int verify(Protected *pr){
     char *t=decrypt(pr->sgn->tab,pr->sgn->n,pr->pKey->val,pr->pKey->n);
     char dc[500];

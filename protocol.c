@@ -33,7 +33,7 @@ void generate_key_values(long p,long q,long *n,long *s,long *u){
     }
 }
 
-/* Fonction de cryptage d'une chaine de caractères chaine grâce à la clé publique (s,n)
+/* Fonction de chiffrement d'une chaine de caractères chaine grâce à la clé publique (s,n)
 -- PROBLEME : Donne un mauvais entier pour les caractères avec accents*/
 long *encrypt(char *chaine,long s,long n){ 
     int i=0;
@@ -51,7 +51,7 @@ long *encrypt(char *chaine,long s,long n){
     return res;
 }
 
-/* Fonction de décryptage d'un tableau d'entier en une chaîne de caractère grâce à la clé privée (u,n)
+/* Fonction de déchiffrement d'un tableau d'entier en une chaîne de caractère grâce à la clé privée (u,n)
 -- Libère le tableau d'entier crypted de la mémoire*/
 char *decrypt(long *crypted,int size,long u,long n){
     if (crypted==NULL){

@@ -258,6 +258,8 @@ void delete_block(Block *b){
     free(b);
 }
 
+/*Fonction d'ajout d'un bloc dans le dossier Blockchain
+-- Le bloc ajouté est dans le fichier Pending_block*/
 void add_block(int d,char *name){
     Block *b=read_block("Blockchain/Pending_block");
     if (verify_block(b,d)==1){
@@ -271,7 +273,8 @@ void add_block(int d,char *name){
     remove("Blockchain/Pending_block");
 }
 
-
+/*Fonction de soumission d'un vote
+-- Le vote est ajouté à la fin du fichier Pending_votes.txt*/
 void submit_vote(Protected *p){
     FILE *f=fopen("Blockchain/Pending_votes.txt","a");
     if (f==NULL){
@@ -434,6 +437,8 @@ CellProtected *fusion_highest_CP(CellTree *racine){
     return res;
 }
 
+/*Fonction de lecture du dossier Blockchain pour créer un arbre de blocs
+-- Retourne la racine de l'arbre*/
 CellTree *read_tree(){
     // Recherche du nombre de fichiers dans le dossier Blockchain
     // Possible de faire un seul parcours du dossier et avoir un tableau à taille variable (realloc)
@@ -449,6 +454,7 @@ CellTree *read_tree(){
         closedir(repc);
     }
 
+    // Création des blocs
     CellTree *tab[c];
     CellTree *racine=NULL;
     int maxi=0;
@@ -465,7 +471,7 @@ CellTree *read_tree(){
         }
         closedir(rep);
     }
-    
+    // Recherche des liens père/fils
     for(int i=0;i<maxi;i++){
         for(int j=0;j<maxi;j++){
             if (j==i){
@@ -476,6 +482,7 @@ CellTree *read_tree(){
             }
         }
     }
+    // Recherche de la racine
     for(int k=0;k<maxi;k++){
         if (tab[k]->father==NULL){
             racine=tab[k];
