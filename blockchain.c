@@ -317,22 +317,20 @@ int update_height(CellTree *father,CellTree *child){
     return 1;
 }
 
-/*Fonction d'ajout en tête d'un noeud fils child au noeud père father*/
+/*Fonction d'ajout d'un noeud fils child au noeud père father*/
 void add_child(CellTree *father,CellTree *child){
     if (father==NULL){
         father=child;
         return;
     }
-    // Ajout en tête du fils
+    // Ajout du fils
     if (father->firstChild==NULL){
         father->firstChild=child;
     } else {
-        CellTree *tmp = father->firstChild;
-        // Looking for the first child having no brother
+        CellTree *tmp=father->firstChild;
         while (tmp->nextBro != NULL) {
-          tmp = tmp->nextBro;
+          tmp=tmp->nextBro;
         }
-
         tmp->nextBro = child;
     }
     child->father=father;
